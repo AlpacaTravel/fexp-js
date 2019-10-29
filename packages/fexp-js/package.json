@@ -1,6 +1,6 @@
 {
   "name": "@alpaca-travel/fexp-js",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Functional expressions",
   "main": "index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
@@ -26,6 +26,5 @@
   },
   "env": {
     "jest": true
-  },
-  "dependencies": {}
+  }
 }
