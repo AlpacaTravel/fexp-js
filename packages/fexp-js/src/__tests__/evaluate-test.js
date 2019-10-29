@@ -10,7 +10,7 @@ describe("evaluate()", () => {
           ([arg1, arg2], context) => `${arg1}${arg2}${context.foo}`
         );
 
-        const result = evaluate(expr, context, { "my-function": myFunction });
+        const result = evaluate(expr, { "my-function": myFunction }, context);
         expect(result).toBe("arg1arg2bar");
         expect(myFunction.mock.calls.length).toBe(1);
         expect(myFunction.mock.calls[0][0]).toMatchObject(["arg1", "arg2"]);
@@ -26,7 +26,7 @@ describe("evaluate()", () => {
       it('will no process further ["literal", ["foo", "bar"]]', () => {
         const expr = ["literal", ["foo", "bar"]];
         expect(
-          evaluate(expr, null, {
+          evaluate(expr, {
             foo: () => "substituted"
           })
         ).toMatchObject(["foo", "bar"]);
@@ -39,8 +39,8 @@ describe("evaluate()", () => {
 
         const result = evaluate(
           ["evaluate", ["get", "bar"], ["get", "foo"]],
-          context,
-          { get }
+          { get },
+          context
         );
         expect(result).toBe("foobar");
       });
@@ -56,8 +56,8 @@ describe("evaluate()", () => {
       });
       it("will negate a fn result", () => {
         const fn = ([arg0]) => arg0;
-        expect(evaluate(["!fn", false], null, { fn })).toBe(true);
-        expect(evaluate(["!fn", true], null, { fn })).toBe(false);
+        expect(evaluate(["!fn", false], { fn })).toBe(true);
+        expect(evaluate(["!fn", true], { fn })).toBe(false);
       });
       it("will negate simply", () => {
         expect(evaluate(["!", true])).toBe(false);
@@ -69,7 +69,7 @@ describe("evaluate()", () => {
         }).toThrow();
         expect(() => {
           const fn = ([arg0]) => arg0;
-          evaluate(["!fn", { foo: "bar" }], null, { fn });
+          evaluate(["!fn", { foo: "bar" }], { fn });
         }).toThrow();
         expect(() => {
           evaluate(["!literal", { foo: "bar" }]);

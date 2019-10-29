@@ -73,14 +73,14 @@ const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
   if (depth === 0) {
     const source = `
 // Function arguments
-const [ctx, fns] = arguments;
+const [fns, ctx] = arguments;
 
 // Negate Check
 const negate = (val) => { if (typeof val !== 'boolean') { throw new Error('Can not negate a non-boolean result'); } return !val; };
 
 // Compiled Expression
 return ${compiledResult};`;
-    return { source };
+    return { source, compiled: new Function(source) };
   }
 
   return compiledResult;

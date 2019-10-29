@@ -15,7 +15,7 @@ const nOpArg0 = ([arg0]) => arg0;
  * @param {object} context Supplied context
  * @param {object} fns Supplied named functions
  */
-const evaluate = (expr, context = null, fns) => {
+const evaluate = (expr, fns, context = null) => {
   // Only evaluate ["name", ...args]
   if (Array.isArray(expr) && typeof expr[0] === "string") {
     let [type, ...args] = expr;
@@ -35,10 +35,10 @@ const evaluate = (expr, context = null, fns) => {
     // Evaluate
     if (type === "evaluate") {
       // Determine the new context
-      const nextContext = evaluate(args[1], context, fns);
+      const nextContext = evaluate(args[1], fns, context);
 
       // Invoke
-      const result = evaluate(args[0], nextContext, fns);
+      const result = evaluate(args[0], fns, nextContext);
 
       // Check for negate conditions
       return isNegating ? negate(result) : result;
@@ -48,7 +48,7 @@ const evaluate = (expr, context = null, fns) => {
     const fn = type.length === 0 ? nOpArg0 : fns && fns[type];
     if (typeof fn === "function") {
       // Resolve the args
-      const resolvedArgs = args.map(arg => evaluate(arg, context, fns));
+      const resolvedArgs = args.map(arg => evaluate(arg, fns, context));
 
       // Invoke
       const result = fn(resolvedArgs, context);

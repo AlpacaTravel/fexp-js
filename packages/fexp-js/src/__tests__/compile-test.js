@@ -26,9 +26,11 @@ describe("compile()", () => {
       get: ([arg0], context) => context[arg0],
       all: args => args.every(a => a === true)
     };
-    const { source } = compile(expr, fns);
+    const { source, compiled } = compile(expr, fns);
     const fn = new Function(source);
-    const result = fn(context, fns);
+    const result = fn(fns, context);
     expect(result).toBe(true);
+    expect(typeof compiled).toBe("function");
+    expect(compiled(fns, context)).toBe(true);
   });
 });

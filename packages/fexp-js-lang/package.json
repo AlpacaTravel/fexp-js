@@ -6,14 +6,17 @@
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlpacaTravel/fexp-js"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "rollup -c rollup.config.js",
-    "benchmark": "node benchmark.js"
+    "build": "rollup -c rollup.config.js"
   },
   "devDependencies": {
     "benny": "^3.6.14",

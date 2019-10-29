@@ -10,13 +10,14 @@ The syntax:
 ## Evaluation
 
 ```javascript
-import { evaluate } from "fexp-js";
+import { evaluate } from "@alpaca-travel/fexp-js";
+import lang from "@alpaca-travel/fexp-js-lang";
 
 // Expressions are just JSON strings
 const expression = JSON.parse(`["==", ["get", "foo"], "bar"]`);
 
 // Evaluate the expression against context
-const result = evaluate(expr, { foo: "bar" });
+const result = evaluate(expr, lang, { foo: "bar" });
 console.log(result); // Output; true
 ```
 
@@ -42,6 +43,6 @@ const foobar = ([a, b]) => a * b;
 
 // Example expression with our own function
 const expression = JSON.parse(`["foobar", ["get", "foo"], ["get", "bar"]]`);
-const result = evaluate(expression, { foo: 2, bar: 3 }, { foobar });
+const result = evaluate(expression, { ...lang, foobar }, { foo: 2, bar: 3 });
 console.log(result); // 6
 ```

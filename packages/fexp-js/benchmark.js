@@ -1,6 +1,6 @@
 /* benchmark.js */
 const b = require("benny");
-const functions = require("./dist/functions");
+const functions = require("../fexp-js-lang/dist/index");
 const mod = require("./dist/index");
 
 const factory = () => ({
