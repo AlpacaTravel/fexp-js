@@ -2,7 +2,7 @@
   "name": "@alpaca-travel/fexp-js-lang",
   "version": "0.0.1",
   "description": "Functional expressions",
-  "main": "src/index.js",
+  "main": "index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",
   "private": false,
@@ -14,6 +14,7 @@
     "dist"
   ],
   "scripts": {
+    "prepublish": "npm run build",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "rollup -c rollup.config.js"

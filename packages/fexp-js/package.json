@@ -6,10 +6,15 @@
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlpacaTravel/fexp-js"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
+    "prepublish": "npm run build",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "rollup -c rollup.config.js",
@@ -26,5 +31,6 @@
   },
   "env": {
     "jest": true
-  }
+  },
+  "dependencies": {}
 }
