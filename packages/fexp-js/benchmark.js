@@ -20,18 +20,17 @@ const expr = [
   ["in", ["get", "tags"], "example"],
   ["evaluate", ["==", "value", true], ["get", "collection[0]"]]
 ];
-const { source } = mod.compile(expr, functions);
-const compiled = new Function(source);
+const { compiled } = mod.compile(expr, functions);
 
 b.suite(
   "fexp-js evaluate",
 
   b.add("Exeecute Evalute", () => {
-    mod.evaluate(expr, factory(), functions);
+    mod.evaluate(expr, functions, factory());
   }),
 
   b.add("Execute Pre-compiled Evaluate", () => {
-    compiled(factory(), functions);
+    compiled(functions, factory());
   }),
 
   b.cycle(),
