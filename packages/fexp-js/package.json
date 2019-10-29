@@ -2,7 +2,7 @@
   "name": "@alpaca-travel/fexp-js",
   "version": "0.0.2",
   "description": "Functional expressions",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",
   "private": false,
