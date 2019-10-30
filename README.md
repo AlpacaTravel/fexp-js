@@ -91,7 +91,43 @@ console.log(filter(null, myLang));
 
 ### Using in MongoDB \$where conditions
 
-TODO: Describe using compiled output for applying filtering to mongo collection documents
+MongoDB offers support for providing a string containing a JavaScript expression in the \$where clause.
+
+#### Template for String expression
+
+Below is a verbose example of creating a string JavaScript expression with a compiled expression and
+runtime lang.
+
+```javascript
+const { compile } = require("@alpaca-travel/fexp-js");
+const lang = require("@alpaca-travel/fexp-js-lang");
+const fs = require("fs");
+const path = require("path");
+
+// Compiled string of your lang (example shows the IIFE named export of fexp-js-lang)
+const langSource = fs.readFileSync(
+  path.resolve(__dirname, "./node_modules/fexp-js-lang/dist/index-inc.js")
+);
+
+// Compile your expression with your lang
+const { source } = compile(["==", ["get", "foo"], "foobar"], lang);
+
+// Build the MongoDB string JavaScript expression
+const expression = `function() {
+  // Lang source is named 'lang' (e.g. var lang = ... )
+  ${langSource}
+
+  // Our Compiled fn
+  const sub = function() {
+    ${source}
+  }
+
+  return sub(lang, this);
+}`;
+
+// Output the expression
+console.log(expression);
+```
 
 ## Develop
 
