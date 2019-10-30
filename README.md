@@ -96,7 +96,11 @@ MongoDB offers support for providing a string containing a JavaScript expression
 #### Template for String expression
 
 Below is a verbose example of creating a string JavaScript expression with a compiled expression and
-runtime lang.
+fexp-js-lang runtime.
+
+If you are creating your own language extensions, you will need to compile your lang additions using
+your preferred development environment into a target platform (e.g. rollup build configuration,
+see packages/fexp-js-lang/rollup.config.js for example) to provide MongoDB your language implementation.
 
 ```javascript
 const { compile } = require("@alpaca-travel/fexp-js");
