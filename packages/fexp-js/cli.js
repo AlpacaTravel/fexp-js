@@ -13,33 +13,32 @@ const fsWriteFile = util.promisify(fs.writeFile);
 
   // Compiled Functions
   const functionsSource = await fsReadFile(
-    path.resolve(__dirname, "./dist/functions-inc.js")
+    path.resolve(__dirname, "../fexp-js-lang/dist/index-inc.js")
   );
+
+  // Eval named export of "var lang = ..."
   eval(functionsSource.toString());
 
   // Compiled..
-  const { source } = compile(expr, functions);
-  const compiled = `
-// Functions source as IIFE
-${functionsSource}
+  const { source } = compile(expr, lang);
 
-// Context from arguments
-const [context] = arguments;
+  // Wrap in a function() { } and can be bound to this..
+  const compiled = `function() {
+  // Functions source as IIFE
+  ${functionsSource}
 
-// Wrap the source
-const evaluate = function() {
-  ${source}
-}
+  // Context from arguments
+  const [context] = arguments;
 
-// Return the evaluate
-return evaluate(context, functions);`;
+  // Wrap the source
+  const evaluate = function() {
+    ${source}
+  }
+
+  // Return the evaluate
+  return evaluate(lang, this);
+}`;
 
   // Output to file for debug
-  await fsWriteFile(path.resolve(__dirname, "./dist/output.js"), compiled);
   console.log(compiled);
-
-  // Perform...
-  const test = new Function(compiled);
-  const context = { foo: "bar" };
-  const result = test(context);
 })();
