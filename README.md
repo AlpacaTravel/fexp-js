@@ -103,20 +103,21 @@ your preferred development environment into a target platform (e.g. rollup build
 see packages/fexp-js-lang/rollup.config.js for example) to provide MongoDB your language implementation.
 
 ```javascript
-const { compile } = require("@alpaca-travel/fexp-js");
-const lang = require("@alpaca-travel/fexp-js-lang");
 const fs = require("fs");
 const path = require("path");
-
-// Compiled string of your lang (example shows the IIFE named export of fexp-js-lang)
-const langSource = fs.readFileSync(
-  path.resolve(__dirname, "./node_modules/fexp-js-lang/dist/index-inc.js")
-);
+const { compile } = require("@alpaca-travel/fexp-js");
+const lang = require("@alpaca-travel/fexp-js-lang");
 
 // Compile your expression with your lang
 const { source } = compile(["==", ["get", "foo"], "foobar"], lang);
 
+// Obtian your compiled lang source (example shows the IIFE named export of fexp-js-lang)
+const langSource = fs.readFileSync(
+  path.resolve(__dirname, "./node_modules/fexp-js-lang/dist/index-inc.js")
+);
+
 // Build the MongoDB string JavaScript expression
+// Substitute in the 2 compiled components; source and your language source
 const expression = `function() {
   // Lang source is named 'lang' (e.g. var lang = ... )
   ${langSource}
@@ -131,6 +132,10 @@ const expression = `function() {
 
 // Output the expression
 console.log(expression);
+
+// Use in MongoDB $where operator
+// https://docs.mongodb.com/manual/reference/operator/query/where/
+// db.players.find({ $where: expression })
 ```
 
 ## Develop
