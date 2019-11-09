@@ -37,13 +37,30 @@ The fexp-js library is generic enough in scripting purpose to have a wide range 
 
 Expressions can be used to filter a collection.
 
-<iframe
-  src="https://codesandbox.io/embed/fexp-js-demo-vomem?expanddevtools=1&fontsize=14&module=%2Fsrc%2Findex.js&previewwindow=tests&view=editor"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-  title="fexp-js-demo-vomem"
-  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-></iframe>
+```javascript
+import { compile } from "@alpaca-travel/fexp-js";
+import lang from "@alpaca-travel/fexp-js-lang";
+
+// Our collection (see hotels.json for example)
+import hotels from "./hotels.json";
+
+// Serializable/stringify expressions (not required)
+const expr = [
+  "all",
+  [">=", ["get", "stars-rating"], 3.5],
+  ["in", ["get", "tags"], "boutique"]
+];
+
+// Compile our expression
+const { compiled: fn } = compile(expr, lang);
+
+// Match against our collection
+const firstMatch = hotels.find(item => fn(lang, item));
+
+console.log(firstMatch);
+```
+
+[![Edit fexp-js-demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/fexp-js-demo-vomem?fontsize=14&previewwindow=tests)
 
 # Language Reference
 
@@ -100,13 +117,30 @@ fexp-js-lang supports a number of functions to work with types in expressions.
 ["is-date", new Date("2020-01-01")] === true
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/fexp-js-demo-vomem?fontsize=14&module=%2Fsrc%2F__tests__%2Ftypes-test.js&previewwindow=tests&view=editor"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-  title="fexp-js-demo-vomem"
-  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-></iframe>
+```javascript
+import { evaluate } from "@alpaca-travel/fexp-js";
+import lang from "@alpaca-travel/fexp-js-lang";
+
+describe("Using Types with fexp-js-lang", () => {
+  it("will return typeof for the supplied parameters", () => {
+    // ['typeof', 0] === 'number'
+    expect(evaluate(["typeof", 0], lang)).toBe("number");
+    expect(evaluate(["typeof", "test"], lang)).toBe("string");
+    expect(evaluate(["typeof", { foo: "bar" }], lang)).toBe("object");
+    expect(evaluate(["typeof", ["literal", ["value1", "value2"]]], lang)).toBe(
+      "object"
+    );
+  });
+  it("will cast using to-boolean", () => {
+    expect(evaluate(["to-boolean", "true"], lang)).toBe(true);
+    expect(evaluate(["to-boolean", "yes"], lang)).toBe(true);
+    expect(evaluate(["to-boolean", "false"], lang)).toBe(false);
+    expect(evaluate(["to-boolean", "0"], lang)).toBe(false);
+  });
+});
+```
+
+[![Edit fexp-js-demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/fexp-js-demo-vomem?fontsize=14&module=%2Fsrc%2F__tests__%2Ftypes-test.js&previewwindow=tests)
 
 ## Enhanced Alpaca Language (fexp-js-lang-alpaca)
 
