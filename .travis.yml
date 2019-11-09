@@ -9,4 +9,10 @@ before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s
   - export PATH="$HOME/.yarn/bin:$PATH"
 script:
+  - cd packages/fexp-js
+  - yarn
+  - cd -
+  - cd packages/fexp-js-lang
+  - yarn
+  - cd -
   - yarn test
