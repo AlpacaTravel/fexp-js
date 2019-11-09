@@ -10,7 +10,7 @@ const resolveContext = (context, property) => {
     return _get(context, property);
   }
 
-  return property;
+  return null;
 };
 
 const get = ([prop], context) => resolveContext(context, prop);
