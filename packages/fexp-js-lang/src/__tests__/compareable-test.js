@@ -40,4 +40,9 @@ describe("Combing", () => {
     expect(compareable.gte([3, 2])).toBe(true);
     expect(compareable.gte).toBe(compareable[">="]);
   });
+  it("will compare dates using time()", () => {
+    expect(
+      compareable.lt([new Date("1970-01-01"), new Date("1980-01-01")])
+    ).toBe(true);
+  });
 });

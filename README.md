@@ -4,8 +4,6 @@
 
 Functional Expressions ("fexp") provides a simple functional scripting syntax. fexp-js is a supported JavaScript implementation for developers to leverage in their applications.
 
-Fexp offers:
-
 - Simple syntax
 - General purpose expressions for filtering, map/reduce etc
 - Portable via serialization (JSON)
