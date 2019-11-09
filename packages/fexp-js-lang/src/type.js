@@ -5,10 +5,24 @@ const boolean = args => args.find(arg => typeof arg === "boolean");
 const array = args => args.find(arg => Array.isArray(arg));
 const isString = ([arg0]) => typeof arg0 === "string";
 const isNumber = ([arg0]) => typeof arg0 === "number";
-const isObject = ([arg0]) => typeof arg0 === "object";
+const isObject = ([arg0]) =>
+  typeof arg0 === "object" && arg0 !== null && !Array.isArray(arg0);
 const isArray = ([arg0]) => Array.isArray(arg0);
 const isBoolean = ([arg0]) => typeof arg0 === "boolean";
-const fTypeof = ([arg0]) => typeof arg0;
+const fTypeof = ([arg0]) => {
+  const type = typeof arg0;
+  if (type === "object") {
+    if (Array.isArray(arg0)) {
+      return "array";
+    }
+    if (arg0 === null) {
+      return "null";
+    }
+  }
+  // TODO: Check for regex and date
+
+  return type;
+};
 const toNumber = ([prop]) => Number(prop);
 const toDate = ([prop]) => new Date(prop);
 const toBoolean = args => {
@@ -21,6 +35,9 @@ const toBoolean = args => {
     if (val === "1" || val === "true" || val === "yes") {
       return true;
     }
+  }
+  if (typeof prop === "number") {
+    return prop === 1;
   }
   return false;
 };
