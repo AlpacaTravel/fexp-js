@@ -2,7 +2,9 @@
   "name": "@alpaca-travel/fexp-js-root",
   "private": true,
   "scripts": {
-    "test": "lerna exec yarn test:coverage",
+    "test": "yarn test:fexp-js && yarn test:fexp-js-lang",
+    "test:fexp-js": "cd packages/fexp-js && yarn test:coverage",
+    "test:fexp-js-lang": "cd packages/fexp-js-lang && yarn test:coverage",
     "coverage:combine": "istanbul report --include \"./packages/**/coverage/coverage-final.json\" lcovonly text-summary"
   },
   "devDependencies": {
