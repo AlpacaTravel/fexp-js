@@ -1,6 +1,8 @@
-const { toNumber } = require("./type");
+const type = require("./type");
 
 const numbersOperation = fn => ([a, b]) => fn(toNumber([a]), toNumber([b]));
+
+const toNumber = type["to-number"];
 
 const subtract = numbersOperation((a, b) => a - b);
 const add = numbersOperation((a, b) => a + b);
@@ -18,8 +20,22 @@ const acos = ([arg0]) => Math.acos(toNumber([arg0]));
 const cos = ([arg0]) => Math.cos(toNumber([arg0]));
 const atan = ([arg0]) => Math.atan(toNumber([arg0]));
 const tan = ([arg0]) => Math.tan(toNumber([arg0]));
-const min = args => Math.min(...args.map(arg => toNumber([arg])));
-const max = args => Math.max(...args.map(arg => toNumber([arg])));
+const min = args => {
+  if (Array.isArray(args) && args.length > 1) {
+    return Math.min(...args.map(arg => toNumber([arg])));
+  } else if (Array.isArray(args) && Array.isArray(args[0])) {
+    return Math.min(...args[0].map(arg => toNumber([arg])));
+  }
+  return 0;
+};
+const max = args => {
+  if (Array.isArray(args) && args.length > 1) {
+    return Math.max(...args.map(arg => toNumber([arg])));
+  } else if (Array.isArray(args) && Array.isArray(args[0])) {
+    return Math.max(...args[0].map(arg => toNumber([arg])));
+  }
+  return 0;
+};
 const random = () => Math.random();
 const e = () => Math.E;
 const pi = () => Math.PI;
