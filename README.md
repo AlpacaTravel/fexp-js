@@ -68,7 +68,7 @@ console.log(firstMatch);
 
 - Equality: ==, !=, <, >, <=, >=, eq, lt, lte, gt, gte
 - Deep Equality: equal/equals, !equal/!equals
-- Accessors: get, at, length
+- Accessors: get (also using paths like foo.bar), at, length
 - Existence: has/have/exist/exists/empty, !has/!have/!exist/!exists/!empty
 - Membership: in/!in
 - Types: typeof, to-boolean, to-string, to-number, to-regex, to-date, is-array, is-number, is-boolean, is-object, is-regex
