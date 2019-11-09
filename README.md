@@ -76,6 +76,7 @@ console.log(firstMatch);
 - Combining: all/any/none
 - String manipulation: concat, uppercase, lowercase
 - Math: +, -, \*, /, floor, ceil, sin/cos/tan/asin/acos/atan, pow, sqrt, min, max, random, e, pi, ln, ln2, ln10, log2e, log10e
+- control: match, case
 - more..
 
 ### Types
@@ -140,6 +141,22 @@ describe("Using Types with fexp-js-lang", () => {
 ```
 
 [![Edit fexp-js-demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/fexp-js-demo-vomem?fontsize=14&module=%2Fsrc%2F__tests__%2Ftypes-test.js&previewwindow=tests)
+
+### Control
+
+```
+// Supporting basic if/then/else
+["case", true, 1, 2] === 1
+["case", false, 1, 2] === 2
+["case", false, 1, true, 2, 3] === 2
+["case", false, 1, false, 2, 3] === 3
+
+// Match
+["match", "target", ["a", "set", "of", "target"], 1, 2] === 1
+["match", "foo", ["a", "set", "of", "target"], 1, 2] === 2
+["match", "foo", ["a", "set", "of", "target"], 1, ["foo"], 2, 3] === 2
+["match", "foo", ["a", "set", "of", "target"], 1, ["bar"], 2, 3] === 3
+```
 
 ## Enhanced Alpaca Language (fexp-js-lang-alpaca)
 
