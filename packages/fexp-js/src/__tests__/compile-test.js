@@ -17,6 +17,8 @@ describe("compile()", () => {
         ["evaluate", ["get", "bar"], ["get", "foo"]],
         "foobar"
       ],
+      ["!evaluate", false],
+      ["custom"],
       ["!", ["!all", true, true]],
       ["!literal", false],
       ["literal", true]
@@ -24,7 +26,8 @@ describe("compile()", () => {
     const fns = {
       "==": ([a, b]) => a === b,
       get: ([arg0], context) => context[arg0],
-      all: args => args.every(a => a === true)
+      all: args => args.every(a => a === true),
+      custom: () => true
     };
     const { source, compiled } = compile(expr, fns);
     const fn = new Function(source);
@@ -32,5 +35,8 @@ describe("compile()", () => {
     expect(result).toBe(true);
     expect(typeof compiled).toBe("function");
     expect(compiled(fns, context)).toBe(true);
+  });
+  it("complains if fn is not found in lang", () => {
+    expect(() => compile(["not-found"], {})).toThrow();
   });
 });
