@@ -75,8 +75,7 @@ console.log(firstMatch);
 - Regular Expressions: "regex-test"
 - Combining: all/any/none
 - String manipulation: concat, uppercase, lowercase
-- Math: +, -, \*, /, floor, ceil
-- Control flow: case
+- Math: +, -, \*, /, floor, ceil, sin/cos/tan/asin/acos/atan, pow, sqrt, min, max, random, e, pi, ln, ln2, ln10, log2e, log10e
 - more..
 
 ### Types
