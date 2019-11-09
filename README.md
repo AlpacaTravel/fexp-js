@@ -71,7 +71,7 @@ console.log(firstMatch);
 - Accessors: get, at, length
 - Existence: has/have/exist/exists/empty, !has/!have/!exist/!exists/!empty
 - Membership: in/!in
-- Types: typeof, to-boolean, to-string, to-number, to-regex
+- Types: typeof, to-boolean, to-string, to-number, to-regex, to-date, is-array, is-number, is-boolean, is-object, is-regex
 - Regular Expressions: "regex-test"
 - Combining: all/any/none
 - String manipulation: concat, uppercase, lowercase
