@@ -66,9 +66,9 @@ console.log(firstMatch);
 
 ## Standard Language (fexp-js-lang)
 
-- Equality: ==, !=, <, >, <=, >=
-- Context: get
+- Equality: ==, !=, <, >, <=, >=, eq, lt, lte, gt, gte
 - Deep Equality: equal/equals, !equal/!equals
+- Accessors: get, at, length
 - Existence: has/have/exist/exists/empty, !has/!have/!exist/!exists/!empty
 - Membership: in/!in
 - Types: typeof, to-boolean, to-string, to-number, to-regex
