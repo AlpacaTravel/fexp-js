@@ -17,6 +17,15 @@ Developers can implement fexp into your application environments to offer script
 
 fexp processes the syntax and will invoke the required language functions as defined in the supplied lang features.
 
+## Size
+
+Fexp core is extremely lightweight. The standard library includes a number of useful functions out of the box including deep equality tests, property path accessors and more. If you want, you can easily implement your own functions as your own lang.
+
+| Library                                      | NPM Minified Size                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| @alpaca-travel/fexp-js Core Library          | ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js)      |
+| @alpaca-travel/fexp-js-lang Standard Library | ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang) |
+
 ### Evaluation Order
 
 "fexp" expressions form a tree structure. Params are evaluated using a depth-first approach, evaluating parameters before executing parent functions.
