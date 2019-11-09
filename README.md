@@ -1,13 +1,13 @@
 # fexp-js (Functional Expressions for JS)
 
-[![Build Status](https://travis-ci.org/AlpacaTravel/fexp-js.svg?branch=master)](https://travis-ci.org/AlpacaTravel/fexp-js)[![Coverage Status](https://coveralls.io/repos/github/AlpacaTravel/fexp-js/badge.svg?branch=master)](https://coveralls.io/github/AlpacaTravel/fexp-js?branch=master)
+[![Build Status](https://travis-ci.org/AlpacaTravel/fexp-js.svg?branch=master)](https://travis-ci.org/AlpacaTravel/fexp-js)[![Coverage Status](https://coveralls.io/repos/github/AlpacaTravel/fexp-js/badge.svg?branch=master)](https://coveralls.io/github/AlpacaTravel/fexp-js?branch=master)![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js?label=core)![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang?label=standard-lang)
 
 Functional Expressions ("fexp") provides a simple functional scripting syntax. fexp-js is a supported JavaScript implementation for developers to offer in their applications.
 
 - Simple syntax
 - General purpose expressions for filtering, map/reduce etc
 - Portable via serialization (JSON)
-- Expandable with your own functions
+- Tiny, with a full-featured syntax or able to support your own set of functions
 
 Developers can implement fexp into your application environments to offer scripting syntax within their product for other developers. These could be used to describe filter evaluation criteria, or perform various tranformations or map/reduce expressions.
 
@@ -16,15 +16,6 @@ Developers can implement fexp into your application environments to offer script
 `[<name>, [param1[, param2[, ..., paramN]]]]`
 
 fexp processes the syntax and will invoke the required language functions as defined in the supplied lang features.
-
-## Size
-
-Fexp core is extremely lightweight. The standard library includes a number of useful functions out of the box including deep equality tests, property path accessors and more. If you want, you can easily implement your own functions as your own lang.
-
-| Library                                      | NPM Minified Size                                                                          |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| @alpaca-travel/fexp-js Core Library          | ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js)      |
-| @alpaca-travel/fexp-js-lang Standard Library | ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang) |
 
 ### Evaluation Order
 
