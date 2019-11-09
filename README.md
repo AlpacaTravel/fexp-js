@@ -1,4 +1,6 @@
-# Getting Started
+# fexp-js (Functional Expressions for JS)
+
+[![Build Status](https://travis-ci.org/AlpacaTravel/fexp-js.svg?branch=master)](https://travis-ci.org/AlpacaTravel/fexp-js)
 
 Functional Expressions ("fexp") provides a simple functional scripting syntax. fexp-js is a supported JavaScript implementation for developers to leverage in their applications.
 
