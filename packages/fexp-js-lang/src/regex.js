@@ -1,6 +1,5 @@
 const regexTest = args => {
-  const [prop, regex] = args;
-  const value = resolveContext(context, prop);
+  const [value, regex] = args;
   if (!(regex instanceof RegExp)) {
     return false;
   }

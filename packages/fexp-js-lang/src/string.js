@@ -1,4 +1,6 @@
-const { toString } = require("./type");
+const type = require("./type");
+
+const toString = type["to-string"];
 
 const concat = args => args.map(toString).reduce((c, t) => c.concat(t), "");
 const lowercase = ([prop]) => toString([prop]).toLowerCase();
