@@ -35,7 +35,7 @@ const toString = args => {
     }
     return "false";
   }
-  return `${prop}`;
+  return String(prop);
 };
 const toRegex = args => {
   const [regex, flags = undefined] = args;
