@@ -4,10 +4,10 @@
 
 Functional Expressions ("fexp") provides a simple functional scripting syntax. fexp-js is a supported JavaScript implementation for developers to offer in their applications.
 
-- Simple syntax
-- General purpose expressions for filtering, map/reduce etc
-- Portable via serialization (JSON)
-- Tiny, with a full-featured syntax or able to support your own set of functions
+- Simple syntax :relieved:
+- General purpose expressions for filtering, map/reduce etc :hammer:
+- Portable via serialization (JSON) :envelope:
+- Tiny, with a full-featured syntax or able to support your own set of functions :school_satchel:
 
 Developers can implement fexp into your application environments to offer scripting syntax within their product for other developers. These could be used to describe filter evaluation criteria, or perform various tranformations or map/reduce expressions.
 
