@@ -1,7 +1,7 @@
 {
-  "name": "@alpaca-travel/fexp-js-lang",
+  "name": "@alpaca-travel/fexp-js-lang-gis",
   "version": "0.2.0",
-  "description": "Functional expressions",
+  "description": "Language for GIS based functional expressions",
   "main": "dist/index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",
@@ -32,8 +32,10 @@
     "jest": true
   },
   "dependencies": {
-    "lodash.get": "^4.4.2",
-    "lodash.isempty": "^4.4.0",
-    "lodash.isequal": "^4.5.0"
+    "@turf/boolean-contains": "^6.0.0",
+    "@turf/boolean-crosses": "^6.0.0",
+    "@turf/boolean-disjoint": "^6.0.0",
+    "@turf/boolean-overlap": "^6.0.0",
+    "@turf/boolean-within": "^6.0.0"
   }
 }

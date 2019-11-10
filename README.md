@@ -9,6 +9,7 @@ Functional Expressions ("fexp") provides a simple functional scripting syntax. f
 - Portable via serialization (JSON) :envelope:
 - Compiles expressions into functions :speedboat: :rocket:
 - Tiny, with a full-featured syntax :school_satchel:
+- Optional libs, for GIS :earth_africa: :earth_americas: :earth_asia:
 - Or able to support your own set of functions :scissors: :bulb:
 
 Developers can implement fexp into your application environments to offer scripting syntax within their product for other developers. These could be used to describe filter evaluation criteria, or perform various tranformations or map/reduce expressions.
@@ -160,19 +161,21 @@ describe("Using Types with fexp-js-lang", () => {
 ["match", "foo", ["a", "set", "of", "target"], 1, ["bar"], 2, 3] === 3
 ```
 
-## Enhanced Alpaca Language (fexp-js-lang-alpaca)
+## GIS Language Enhancements (@alpaca-travel/fexp-js-lang-gis)
 
-The enhanced alpaca language is built to support the alpaca platform language with specific enhancements:
+The optional GIS language enhancements provides language enhancements for working with GIS based scripting requirements.
 
-- GIS, boolean conditions on geometry, working with FeatureCollections/Features
-- Accessing attributes
-- Evaluating dates and opening hours
+- Boolean comparisons; geo-within, geo-contains, geo-disjoint, geo-crosses, geo-overlap
 
 # Developing and Extending
 
 ## Installation
 
 `yarn add @alpaca-travel/fexp-js @alpaca-travel/fexp-js-lang`
+
+### Optionally installs
+
+`yarn add @alpaca-travel/fexp-js-lang-gis`
 
 ## API Surface
 
@@ -223,12 +226,15 @@ Composites langs together to mix in different function support
 ```javascript
 import { langs } from "@alpaca-travel/fexp-js";
 
-// Lang modules
+// Lang modules offered
 import std from "@alpaca-travel/fexp-js-lang";
+import gis from "@alpaca-travel/fexp-js-lang-gis";
+
+// Custom library with your own modues
 import myLib from "./my-lib";
 
-// Composite the languages, mixing yours and the standard lib
-const lang = langs(std, myLib);
+// Composite the languages, mixing standard, gis and custom libs
+const lang = langs(std, gis, myLib);
 
 // Evaluate now with support for multiple
 evaluate(["all", ["my-function", "arg1"], ["==", "foo", "foo"]], lang);
