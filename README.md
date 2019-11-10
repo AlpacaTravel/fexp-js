@@ -178,7 +178,7 @@ The enhanced alpaca language is built to support the alpaca platform language wi
 
 ### compile(expr, lang)
 
-Compiles the expression into a function for repeat use.
+Compiles the expression into a function for speed in repeat use.
 
 ```javascript
 import { compile } from "@alpaca-travel/fexp-js";
@@ -223,6 +223,7 @@ Composites langs together to mix in different function support
 ```javascript
 import { langs } from "@alpaca-travel/fexp-js";
 
+// Lang modules
 import std from "@alpaca-travel/fexp-js-lang";
 import myLib from "./my-lib";
 
@@ -231,6 +232,8 @@ const lang = langs(std, myLib);
 
 // Evaluate now with support for multiple
 evaluate(["all", ["my-function", "arg1"], ["==", "foo", "foo"]], lang);
+
+console.log(result); // <-- true
 ```
 
 ## Adding Custom Functions
@@ -252,7 +255,7 @@ const lang = langs(std, { sum });
 const { compiled: exprFn } = compile(expr, lang);
 
 // Process the compiled function
-console.log(exprFn(lang));
+console.log(exprFn(lang)); // <-- 10
 ```
 
 ## Embedding in MongoDB
