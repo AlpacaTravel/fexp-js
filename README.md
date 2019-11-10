@@ -233,7 +233,7 @@ const lang = langs(std, myLib);
 evaluate(["all", ["my-function", "arg1"], ["==", "foo", "foo"]], lang);
 ```
 
-## Adding Custom Language Support
+## Adding Custom Functions
 
 ```javascript
 import { langs } from "@alpaca-travel/fexp-js";
