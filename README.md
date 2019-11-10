@@ -160,9 +160,9 @@ describe("Using Types with fexp-js-lang", () => {
 ["match", "foo", ["a", "set", "of", "target"], 1, ["bar"], 2, 3] === 3
 ```
 
-## GIS Language Enhancements (fexp-js-lang-geo)
+## GIS Language Enhancements (@alpaca-travel/fexp-js-lang-gis)
 
-The GIS language enhancements provides language enhancements for working with GIS based scripting requirements.
+The optional GIS language enhancements provides language enhancements for working with GIS based scripting requirements.
 
 - Boolean comparisons; geo-within, geo-contains, geo-disjoint, geo-crosses, geo-overlap
 
@@ -171,6 +171,10 @@ The GIS language enhancements provides language enhancements for working with GI
 ## Installation
 
 `yarn add @alpaca-travel/fexp-js @alpaca-travel/fexp-js-lang`
+
+### Optionally installs
+
+`yarn add @alpaca-travel/fexp-js-lang-gis`
 
 ## API Surface
 
@@ -221,12 +225,15 @@ Composites langs together to mix in different function support
 ```javascript
 import { langs } from "@alpaca-travel/fexp-js";
 
-// Lang modules
+// Lang modules offered
 import std from "@alpaca-travel/fexp-js-lang";
+import gis from "@alpaca-travel/fexp-js-lang-gis";
+
+// Custom library with your own modues
 import myLib from "./my-lib";
 
-// Composite the languages, mixing yours and the standard lib
-const lang = langs(std, myLib);
+// Composite the languages, mixing standard, gis and custom libs
+const lang = langs(std, gis, myLib);
 
 // Evaluate now with support for multiple
 evaluate(["all", ["my-function", "arg1"], ["==", "foo", "foo"]], lang);
