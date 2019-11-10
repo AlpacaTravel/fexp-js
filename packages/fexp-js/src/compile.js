@@ -19,9 +19,9 @@ const compile = (expr, fns, depth = 0, ctx = 0) => {
 
       // If constructing a subroutine
       if (type === "fn") {
-        const nextContext = `{ vars: { arguments: arguments }, prior: ctx${ctx} }`;
+        const nextContext = `{ vars: { arguments: s${depth} }, prior: ctx${ctx} }`;
         const compiledSub = compile(args[0], fns, depth + 1, ctx + 1);
-        return `function() { const ctx${ctx +
+        return `function(...s${depth}) { const ctx${ctx +
           1} = ${nextContext}; const result = ${compiledSub}; return ${
           isNegating ? "negate(result)" : "result"
         }; }`;
@@ -50,7 +50,7 @@ const compile = (expr, fns, depth = 0, ctx = 0) => {
       // Process the args
       if (typeof fns[type] === "function" || type.length === 0) {
         // Resolve the args
-        const resolvedArgs = args.map(arg => compile(arg, fns, depth + 1));
+        const resolvedArgs = args.map(arg => compile(arg, fns, depth + 1, ctx));
 
         // Early exit on type
         if (type.length === 0) {

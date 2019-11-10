@@ -87,6 +87,18 @@ describe("evaluate()", () => {
         expect(fn2(true)).toBe(false);
         expect(fn2(false)).toBe(true);
       });
+      it("will support map with lambda", () => {
+        const map = ([arg0, arg1]) => arg0.map(arg1);
+        const fnArg = ([arg0], context) => context.vars.arguments[arg0];
+        const mult = ([arg0, arg1]) => arg0 * arg1;
+        const lang = { map, ["fn-arg"]: fnArg, ["*"]: mult };
+        expect(
+          evaluate(
+            ["map", [1, 2, 3], ["fn", ["*", ["fn-arg", 0], ["fn-arg", 0]]]],
+            lang
+          )
+        ).toMatchObject([1, 4, 9]);
+      });
     });
   });
 });
