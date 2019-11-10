@@ -22,7 +22,7 @@ export default [
     output: {
       file: "dist/index-inc.js",
       format: "iife",
-      name: "lang"
+      name: "langGis"
     },
     plugins: [
       resolve({
