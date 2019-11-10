@@ -34,6 +34,15 @@ const expr = ["all", ["is-boolean", true], ["==", "foobar", "foobar"]];
 // 3. Evaluate ["all", ...]
 ```
 
+### Literal Values
+
+To stop processing through params (such as an string array which appears like an expression), use the "literal" function.
+
+```javascript
+// Use literal to take the params without evaluating the array contents
+const expr = ["in", ["literal", ["foo", "bar"]], "bar"];
+```
+
 ## Basic Example
 
 The fexp-js library is generic enough in scripting purpose to have a wide range of use cases. It could be used for filtering, other map/reduce functions.
