@@ -41,9 +41,11 @@ const at = args => {
   }
   return undefined;
 };
+const fnArg = ([index], context) => context.vars.arguments[index];
 
 module.exports = {
   get,
   at,
-  length
+  length,
+  ["fn-arg"]: fnArg
 };

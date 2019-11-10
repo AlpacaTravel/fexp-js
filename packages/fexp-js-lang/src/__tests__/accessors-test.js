@@ -26,4 +26,9 @@ describe("Accessors", () => {
     expect(accessors.at([2, [1, 2, 3]])).toBe(3);
     expect(accessors.at([2, undefined])).toBe(undefined);
   });
+  it('will access context arguments using "fn-arg"', () => {
+    expect(
+      accessors["fn-arg"]([1], { vars: { arguments: ["foo", "bar"] } })
+    ).toBe("bar");
+  });
 });
