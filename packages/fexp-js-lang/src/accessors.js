@@ -13,7 +13,7 @@ const resolveContext = (context, property) => {
   return null;
 };
 
-const get = ([prop], context) => resolveContext(context, prop);
+const get = ([prop, obj], context) => resolveContext(obj || context, prop);
 const length = ([value]) => {
   if (value && value.length) {
     return value.length;

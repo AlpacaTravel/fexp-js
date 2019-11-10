@@ -7,6 +7,7 @@ describe("Accessors", () => {
       "foobar"
     );
     expect(accessors.get(["bar"], null)).toBe(null);
+    expect(accessors.get(["bar", { bar: "foo" }, { bar: "bar" }])).toBe("foo");
   });
   it('will access length using the "length"', () => {
     expect(accessors.length([[1, 2, 3]])).toBe(3);
