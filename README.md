@@ -34,14 +34,6 @@ const expr = ["all", ["is-boolean", true], ["==", "foobar", "foobar"]];
 // 3. Evaluate ["all", ...]
 ```
 
-### Negate
-
-You can negate the boolean return value from a function by prefixing it with a "!".
-
-```javascript
-const expr = ["all", ["!in", ["foo", "bar"], "foobar"], ["!", ["==", "foo", "bar"]]; // true due to negates
-```
-
 ## Basic Example
 
 The fexp-js library is generic enough in scripting purpose to have a wide range of use cases. It could be used for filtering, other map/reduce functions.
@@ -94,6 +86,7 @@ You can negate an expression with either the function prefix of `!fn` or using "
 
 ```javascript
 const expr = ["!", ["==", "foo", "bar"]]; // Negates the == result
+const expr2 = ["!my-function"]; // Negates the result of the function call to "my-function"
 ```
 
 ### Function ("fn")
