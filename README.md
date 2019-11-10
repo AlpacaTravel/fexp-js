@@ -14,7 +14,7 @@ Functional Expressions ("fexp") provides a simple functional scripting syntax. f
 
 Developers can implement fexp into your application environments to offer scripting syntax within their product for other developers. These could be used to describe filter evaluation criteria, or perform various tranformations or map/reduce expressions.
 
-## "fexp" Syntax Overview
+## Syntax Overview
 
 `[<name>, [param1[, param2[, ..., paramN]]]]`
 
