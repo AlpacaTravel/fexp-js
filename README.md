@@ -9,6 +9,7 @@ Functional Expressions ("fexp") provides a simple functional scripting syntax. f
 - Portable via serialization (JSON) :envelope:
 - Compiles expressions into functions :speedboat: :rocket:
 - Tiny, with a full-featured syntax :school_satchel:
+- Optional libs, for GIS :earth_africa: :earth_americas: :earth_asia:
 - Or able to support your own set of functions :scissors: :bulb:
 
 Developers can implement fexp into your application environments to offer scripting syntax within their product for other developers. These could be used to describe filter evaluation criteria, or perform various tranformations or map/reduce expressions.
