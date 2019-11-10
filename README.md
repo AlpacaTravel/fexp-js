@@ -257,7 +257,7 @@ console.log(exprFn(lang));
 
 ## Embedding in MongoDB
 
-MongoDB offers support for providing a string containing a JavaScript expression in the \$where clause.
+MongoDB offers support for providing fexp-js JavaScript expression in the \$where clause via to the V8 Runtime scripting engine.
 
 #### Template for String expression
 
