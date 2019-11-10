@@ -1,6 +1,6 @@
 # fexp-js (Functional Expressions for JS)
 
-![npm](https://img.shields.io/npm/v/@alpaca-travel/fexp-js)[![Build Status](https://travis-ci.org/AlpacaTravel/fexp-js.svg?branch=master)](https://travis-ci.org/AlpacaTravel/fexp-js)[![Coverage Status](https://coveralls.io/repos/github/AlpacaTravel/fexp-js/badge.svg?branch=master)](https://coveralls.io/github/AlpacaTravel/fexp-js?branch=master)![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js?label=core)![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang?label=standard-lang)
+![npm](https://img.shields.io/npm/v/@alpaca-travel/fexp-js)[![Build Status](https://travis-ci.org/AlpacaTravel/fexp-js.svg?branch=master)](https://travis-ci.org/AlpacaTravel/fexp-js)[![Coverage Status](https://coveralls.io/repos/github/AlpacaTravel/fexp-js/badge.svg?branch=master)](https://coveralls.io/github/AlpacaTravel/fexp-js?branch=master)![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js?label=core)
 
 Functional Expressions ("fexp") provides a simple functional scripting syntax. fexp-js is a supported JavaScript implementation for developers to offer in their applications.
 
@@ -34,13 +34,12 @@ const expr = ["all", ["is-boolean", true], ["==", "foobar", "foobar"]];
 // 3. Evaluate ["all", ...]
 ```
 
-### Literal Values
+### Negate
 
-To stop processing through params (such as an string array which appears like an expression), use the "literal" function.
+You can negate the boolean return value from a function by prefixing it with a "!".
 
 ```javascript
-// Use literal to take the params without evaluating the array contents
-const expr = ["in", ["literal", ["foo", "bar"]], "bar"];
+const expr = ["all", ["!in", ["foo", "bar"], "foobar"], ["!", ["==", "foo", "bar"]]; // true due to negates
 ```
 
 ## Basic Example
@@ -76,11 +75,42 @@ console.log(firstMatch);
 
 # Language Reference
 
-## Standard Language (fexp-js-lang)
+## Language Functions
+
+The following language functions are part of the core expression library. They are used to support some of the runtime functions, such as dealing with literal arrays, negation and functions. You don't need to supply these in your language set for them to be used.
+
+### Literal
+
+To stop processing through params (such as an string array which appears like an expression), use the "literal" function.
+
+```javascript
+// Use literal to take the params without evaluating the array contents
+const expr = ["in", ["literal", ["foo", "bar"]], "bar"];
+```
+
+### Negate (!)
+
+You can negate an expression with either the function prefix of `!fn` or using "!" by itself.
+
+```javascript
+const expr = ["!", ["==", "foo", "bar"]]; // Negates the == result
+```
+
+### Function ("fn")
+
+You can build functions that can be passed as function arguments to other functions (such as map reduce etc)
+
+```javascript
+const expr = ["fn", ...]; // Returns a function that can be executed with arguments
+```
+
+## Standard Language Library (@alpaca-travel/fexp-js-lang)
+
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang?label=standard-lang)
 
 - Equality: ==, !=, <, >, <=, >=, eq, lt, lte, gt, gte
 - Deep Equality: equal/equals, !equal/!equals
-- Accessors: get (also using paths like foo.bar), at, length
+- Accessors: get (also using paths like foo.bar), at, length, fn-arg
 - Existence: has/have/exist/exists/empty, !has/!have/!exist/!exists/!empty
 - Membership: in/!in
 - Types: typeof, to-boolean, to-string, to-number, to-regex, to-date, is-array, is-number, is-boolean, is-object, is-regex
@@ -89,7 +119,6 @@ console.log(firstMatch);
 - String manipulation: concat, uppercase, lowercase
 - Math: +, -, \*, /, floor, ceil, sin/cos/tan/asin/acos/atan, pow, sqrt, min, max, random, e, pi, ln, ln2, ln10, log2e, log10e
 - control: match, case
-- lambda: fn, fn-arg
 - map reduce: map/reduce/filter/find
 - more..
 
@@ -237,6 +266,8 @@ Using the "fn" and "fn-arg" operators, you can combine with "map"/"reduce"/"filt
 
 ## GIS Language Enhancements (@alpaca-travel/fexp-js-lang-gis)
 
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/@alpaca-travel/fexp-js-lang-gis?label=gis-lang)
+
 The optional GIS language enhancements provides language enhancements for working with GIS based scripting requirements.
 
 - Boolean comparisons; geo-within, geo-contains, geo-disjoint, geo-crosses, geo-overlap
@@ -337,6 +368,44 @@ const { compiled: exprFn } = compile(expr, lang);
 // Process the compiled function
 console.log(exprFn(lang)); // <-- 10
 ```
+
+### Accessing Context
+
+You functions are provided with the signature `fn(args, context)`. Context allows you to access the runtime context.
+
+```javascript
+const context = {
+  vars: {},
+  prior: ...
+}
+```
+
+When your function is invoked, the special vars of "arguments" is assigned the function arguments. In the case of using expressions (using API compiled or evaluate), they are assigned to vars.
+
+```javascript
+const lang = {
+  // Capture the context and args
+  ['my-function']: (args, context) => return { args, context };
+}
+
+// Execute to capture
+const result = evaluate(["my-function", "farg1", "farg2"], lang, "arg1", "arg2");
+
+console.log(result);
+/*
+{
+  args: ["farg1", "farg2"],
+  context: {
+    vars: {
+      arguments: ["arg1", "arg2"]
+    },
+    ...
+  }
+}
+*/
+```
+
+By executing a function in your expression (e.g. by calling "fn" to create a sub-function), when invoked will contain a new context, and the context vars "arguments" contain the arguments passed to your function. By using "fn-args" (in the standard library), you can access the function arguments by index.
 
 ## Embedding in MongoDB
 
