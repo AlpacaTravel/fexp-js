@@ -2,12 +2,20 @@ const accessors = require("../accessors");
 
 describe("Accessors", () => {
   it('will access context properties using "get"', () => {
-    expect(accessors.get(["foo"], { foo: "bar" })).toBe("bar");
-    expect(accessors.get(["foo.bar"], { foo: { bar: "foobar" } })).toBe(
-      "foobar"
-    );
+    expect(
+      accessors.get(["foo"], { vars: { arguments: [{ foo: "bar" }] } })
+    ).toBe("bar");
+    expect(
+      accessors.get(["foo.bar"], {
+        vars: { arguments: [{ foo: { bar: "foobar" } }] }
+      })
+    ).toBe("foobar");
     expect(accessors.get(["bar"], null)).toBe(null);
-    expect(accessors.get(["bar", { bar: "foo" }, { bar: "bar" }])).toBe("foo");
+    expect(
+      accessors.get(["bar", { bar: "foo" }], {
+        vars: { arguments: [{ bar: "bar" }] }
+      })
+    ).toBe("foo");
   });
   it('will access length using the "length"', () => {
     expect(accessors.length([[1, 2, 3]])).toBe(3);
@@ -17,5 +25,10 @@ describe("Accessors", () => {
     expect(accessors.at([2, 1, 2, 3])).toBe(3);
     expect(accessors.at([2, [1, 2, 3]])).toBe(3);
     expect(accessors.at([2, undefined])).toBe(undefined);
+  });
+  it('will access context arguments using "fn-arg"', () => {
+    expect(
+      accessors["fn-arg"]([1], { vars: { arguments: ["foo", "bar"] } })
+    ).toBe("bar");
   });
 });

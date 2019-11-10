@@ -80,6 +80,8 @@ console.log(firstMatch);
 - String manipulation: concat, uppercase, lowercase
 - Math: +, -, \*, /, floor, ceil, sin/cos/tan/asin/acos/atan, pow, sqrt, min, max, random, e, pi, ln, ln2, ln10, log2e, log10e
 - control: match, case
+- lambda: fn, fn-arg
+- map reduce: map/reduce/filter/find
 - more..
 
 ### Types
@@ -159,6 +161,69 @@ describe("Using Types with fexp-js-lang", () => {
 ["match", "foo", ["a", "set", "of", "target"], 1, 2] === 2
 ["match", "foo", ["a", "set", "of", "target"], 1, ["foo"], 2, 3] === 2
 ["match", "foo", ["a", "set", "of", "target"], 1, ["bar"], 2, 3] === 3
+```
+
+### Map Reduce
+
+Using the "fn" and "fn-arg" operators, you can combine with "map"/"reduce"/"filter".
+
+```
+// Map
+[
+  "map",
+  [1, 2, 3], // Collection
+  [
+    "fn", // Build a map function
+    [
+      "*",
+      ["fn-arg", 0], // item
+      ["fn-arg", 1], // index
+    ]
+  ]
+] === [0, 2, 3]
+
+// Reduce
+[
+  "reduce",
+  [1, 2, 3], // Collection
+  [
+    "fn", // Build a reduce function
+    [
+      "*",
+      ["fn-arg", 0], // carry
+      ["fn-arg", 1], // item
+    ]
+  ],
+  2 // initial value
+] === 12
+
+// Filter
+[
+  "filter",
+  [1, 2, 3],
+  [
+    "fn",
+    [
+      ">=",
+      2,
+      ["fn-arg", 0]
+    ]
+  ]
+] === [2, 3]
+
+// Find
+[
+  "find",
+  [1, 2, 3],
+  [
+    "fn",
+    [
+      "<"
+      2,
+      ["fn-arg", 0]
+    ]
+  ]
+] === 3
 ```
 
 ## GIS Language Enhancements (@alpaca-travel/fexp-js-lang-gis)

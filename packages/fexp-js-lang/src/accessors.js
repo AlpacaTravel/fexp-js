@@ -1,19 +1,30 @@
 const _get = require("lodash.get");
 
 // Locate a property from the context
-const resolveContext = (context, property) => {
+const resolveContext = (context, obj, property) => {
+  // Access from the supplied object
+  if (typeof property === "string" && typeof obj !== "undefined") {
+    return _get(obj, property);
+  }
+
+  // Access the default argument
+  const arg0 =
+    context &&
+    context.vars &&
+    context.vars.arguments &&
+    context.vars.arguments[0];
   if (
     typeof property === "string" &&
-    typeof context === "object" &&
+    typeof arg0 === "object" &&
     context !== null
   ) {
-    return _get(context, property);
+    return _get(arg0, property);
   }
 
   return null;
 };
 
-const get = ([prop, obj], context) => resolveContext(obj || context, prop);
+const get = ([prop, obj], context) => resolveContext(context, obj, prop);
 const length = ([value]) => {
   if (value && value.length) {
     return value.length;
@@ -30,9 +41,11 @@ const at = args => {
   }
   return undefined;
 };
+const fnArg = ([index], context) => context.vars.arguments[index];
 
 module.exports = {
   get,
   at,
-  length
+  length,
+  ["fn-arg"]: fnArg
 };
