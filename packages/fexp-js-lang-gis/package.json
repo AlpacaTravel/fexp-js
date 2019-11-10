@@ -1,0 +1,41 @@
+{
+  "name": "@alpaca-travel/fexp-js-lang-gis",
+  "version": "0.1.0",
+  "description": "Language for GIS based functional expressions",
+  "main": "dist/index.js",
+  "author": "Cameron Manderson <cam@alpaca.travel>",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlpacaTravel/fexp-js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "build": "rollup -c rollup.config.js"
+  },
+  "devDependencies": {
+    "benny": "^3.6.14",
+    "jest": "^24.9.0",
+    "rollup": "^1.26.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "terser": "^4.3.9"
+  },
+  "env": {
+    "jest": true
+  },
+  "dependencies": {
+    "@turf/boolean-contains": "^6.0.0",
+    "@turf/boolean-crosses": "^6.0.0",
+    "@turf/boolean-disjoint": "^6.0.0",
+    "@turf/boolean-overlap": "^6.0.0",
+    "@turf/boolean-within": "^6.0.0"
+  }
+}

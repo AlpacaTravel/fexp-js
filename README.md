@@ -160,13 +160,11 @@ describe("Using Types with fexp-js-lang", () => {
 ["match", "foo", ["a", "set", "of", "target"], 1, ["bar"], 2, 3] === 3
 ```
 
-## Enhanced Alpaca Language (fexp-js-lang-alpaca)
+## GIS Language Enhancements (fexp-js-lang-geo)
 
-The enhanced alpaca language is built to support the alpaca platform language with specific enhancements:
+The GIS language enhancements provides language enhancements for working with GIS based scripting requirements.
 
-- GIS, boolean conditions on geometry, working with FeatureCollections/Features
-- Accessing attributes
-- Evaluating dates and opening hours
+- Boolean comparisons; geo-within, geo-contains, geo-disjoint, geo-crosses, geo-overlap
 
 # Developing and Extending
 

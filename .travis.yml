@@ -16,6 +16,9 @@ script:
   - cd packages/fexp-js-lang
   - yarn
   - cd -
+  - cd packages/fexp-js-lang-gis
+  - yarn
+  - cd -
   - pwd
   - yarn test
 
