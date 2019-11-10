@@ -1,4 +1,8 @@
 const evaluate = require("./evaluate");
 const compile = require("./compile");
 
-module.exports = { evaluate, compile };
+const langs = (...composites) => {
+  return Object.assign({}, ...composites);
+};
+
+module.exports = { evaluate, compile, langs };

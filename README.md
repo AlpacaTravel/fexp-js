@@ -180,13 +180,65 @@ The enhanced alpaca language is built to support the alpaca platform language wi
 
 Compiles the expression into a function for repeat use.
 
+```javascript
+import { compile } from "@alpaca-travel/fexp-js";
+import lang from "@alpaca-travel/fexp-js-lang";
+
+// Simple expression
+const expr = ["==", ["get", "foo"], "bar"];
+
+// Compile into function to evaluate
+const {
+  source, // <-- Source JS
+  compiled // <-- Function
+} = compile(expr, lang);
+
+// Execute the compiled function against a context
+const result = compiled(lang, { foo: "bar" });
+
+console.log(result); // <-- true
+```
+
 ### evaluate(expr, lang[, context])
 
-Evaluates an expression without use of compilation (so is therefore slower than compiling)
+Evaluates an expression without use of compilation (so is therefore slower than compiling).
+
+```javascript
+import { evaluate } from "@alpaca-travel/fexp-js";
+import lang from "@alpaca-travel/fexp-js-lang";
+
+// Simple expression
+const expr = ["==", ["get", "foo"], "bar"];
+
+// Execute the compiled function against a context
+const result = evaluate(expr, lang, { foo: "bar" });
+
+console.log(result); // <-- true
+```
+
+### langs(lang1, [, lang2[, lang3, ..., langN]])
+
+Composites langs together to mix in different function support
+
+```javascript
+import { langs } from "@alpaca-travel/fexp-js";
+
+import std from "@alpaca-travel/fexp-js-lang";
+import myLib from "./my-lib";
+
+// Composite the languages, mixing yours and the standard lib
+const lang = langs(std, myLib);
+
+// Evaluate now with support for multiple
+evaluate(["all", ["my-function", "arg1"], ["==", "foo", "foo"]], lang);
+```
 
 ## Adding Custom Language Support
 
 ```javascript
+import { langs } from "@alpaca-travel/fexp-js";
+import std from "@alpaca-travel/fexp-js-lang";
+
 // Implement a sum function to add resolved values
 const sum = args => args.reduce((c, t) => c + t);
 
@@ -194,13 +246,13 @@ const sum = args => args.reduce((c, t) => c + t);
 const expr = ["sum", 1, 2, 3, 4];
 
 // Add the "sum" function to the standard lang
-const myLang = { ...lang, sum };
+const lang = langs(std, { sum });
 
 // Compile for execution
-const { compiled: exprFn } = compile(expr, myLang);
+const { compiled: exprFn } = compile(expr, lang);
 
 // Process the compiled function
-console.log(exprFn(myLang));
+console.log(exprFn(lang));
 ```
 
 ## Embedding in MongoDB
