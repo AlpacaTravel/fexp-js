@@ -1,4 +1,4 @@
-const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
+const compile = (expr, fns, depth = 0, ctx = 0) => {
   const compiledResult = (() => {
     if (Array.isArray(expr) && typeof expr[0] === "string") {
       let [type, ...args] = expr;
@@ -17,24 +17,27 @@ const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
           : JSON.stringify(args[0]);
       }
 
-      // Evaluate
+      // If constructing a subroutine
+      if (type === "fn") {
+        const nextContext = `{ vars: { arguments: arguments }, prior: ctx${ctx} }`;
+        const compiledSub = compile(args[0], fns, depth + 1, ctx + 1);
+        return `function() { const ctx${ctx +
+          1} = ${nextContext}; const result = ${compiledSub}; return ${
+          isNegating ? "negate(result)" : "result"
+        }; }`;
+      }
+
+      // Evaluate with arguments
       if (type === "evaluate") {
         // Determine the new context
-        const nextContext = `${compile(
+        const nextContext = `{ vars: { arguments: [${compile(
           args[1],
           fns,
-          references,
           depth + 1,
           ctx
-        )}`;
+        )}], prior: ctx${ctx} } }`;
 
-        const compiledSub = compile(
-          args[0],
-          fns,
-          references,
-          depth + 1,
-          ctx + 1
-        );
+        const compiledSub = compile(args[0], fns, depth + 1, ctx + 1);
 
         // Invoke
         const result = `(() => { const ctx${ctx +
@@ -47,9 +50,7 @@ const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
       // Process the args
       if (typeof fns[type] === "function" || type.length === 0) {
         // Resolve the args
-        const resolvedArgs = args.map(arg =>
-          compile(arg, fns, references, depth + 1)
-        );
+        const resolvedArgs = args.map(arg => compile(arg, fns, depth + 1));
 
         // Early exit on type
         if (type.length === 0) {
@@ -57,9 +58,9 @@ const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
         }
 
         // Invoke
-        const result = `fns['${type}']([${resolvedArgs.join(", ")}], ctx${
-          ctx > 0 ? ctx : ""
-        })`;
+        const result = `fns['${type}']([${resolvedArgs.join(
+          ", "
+        )}], ctx${ctx})`;
 
         // return isNegating ? `!(${result})` : result;
         return isNegating ? `negate(${result})` : result;
@@ -73,10 +74,12 @@ const compile = (expr, fns, references = [], depth = 0, ctx = 0) => {
   if (depth === 0) {
     const source = `
 // Function arguments
-const [fns, ctx] = arguments;
+const [fns, ...callArgs] = arguments;
 
 // Negate Check
 const negate = (val) => { if (typeof val !== 'boolean') { throw new Error('Can not negate a non-boolean result'); } return !val; };
+
+const ctx0 = { vars: { arguments: callArgs } };
 
 // Compiled Expression
 return ${compiledResult};`;
