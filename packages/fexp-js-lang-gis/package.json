@@ -1,7 +1,7 @@
 {
-  "name": "@alpaca-travel/fexp-js-lang-geo",
+  "name": "@alpaca-travel/fexp-js-lang-gis",
   "version": "0.1.0",
-  "description": "Language for geo based functional expressions",
+  "description": "Language for GIS based functional expressions",
   "main": "dist/index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
   "license": "MIT",

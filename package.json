@@ -2,9 +2,10 @@
   "name": "@alpaca-travel/fexp-js-root",
   "private": true,
   "scripts": {
-    "test": "yarn test:fexp-js && yarn test:fexp-js-lang",
+    "test": "yarn test:fexp-js && yarn test:fexp-js-lang && yarn test:fexp-js-lang-gis",
     "test:fexp-js": "cd packages/fexp-js && yarn test:coverage",
     "test:fexp-js-lang": "cd packages/fexp-js-lang && yarn test:coverage",
+    "test:fexp-js-lang-gis": "cd packages/fexp-js-lang-gis && yarn test:coverage",
     "coverage:combine": "istanbul report --include \"./packages/**/coverage/coverage-final.json\" lcovonly text-summary"
   },
   "devDependencies": {
