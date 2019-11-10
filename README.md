@@ -7,6 +7,7 @@ Functional Expressions ("fexp") provides a simple functional scripting syntax. f
 - Simple syntax :relieved:
 - General purpose expressions (filtering, map/reduce etc) :hammer: :wrench:
 - Portable via serialization (JSON) :envelope:
+- Compiles expressions into functions :speedboat: :rocket:
 - Tiny, with a full-featured syntax :school_satchel:
 - Or able to support your own set of functions :scissors: :bulb:
 
