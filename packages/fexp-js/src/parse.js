@@ -51,31 +51,31 @@ const assert = require("assert");
 
 // Parse an expression
 const parse = (expr, lang, options) => {
-  try {
-    // Ensure we have valid expression syntax
-    assertValidExpressionSyntax(expr);
+  if (isExpression(expr)) {
+    try {
+      // Identify parts
+      const name = getFunctionName(expr);
+      const args = getFunctionArguments(expr);
+      const negate = isFunctionNegated(expr);
 
-    // Identify parts
-    const name = getFunctionName(expr);
-    const args = getFunctionArguments(expr);
-    const negate = isFunctionNegated(expr);
+      // Obtain the fn
+      const fn = getFunction(name, lang);
+      assertValidExpressionFunction(fn);
 
-    // Obtain the fn
-    const fn = getFunction(name, lang);
-    assertValidExpressionFunction(fn);
+      // Obtain the fn parser for arguments
+      const parser = getArgumentsParser(fn, getParser(lang, options));
+      const parsedArguments = parser(args);
 
-    // Obtain the fn parser for arguments
-    const parser = getArgumentsParser(fn, getParser(lang, options));
-    const parsedArguments = parser(args);
-
-    // Evaulate the response
-    return isFunction(parsedArguments)
-      ? getInvocableFunction(parsedArguments, [], negate)
-      : getInvocableFunction(fn, parsedArguments, negate);
-  } catch (e) {
-    console.error(`Parse error: ${e.message}`);
-    throw e;
+      // Evaulate the response
+      return isFunction(parsedArguments)
+        ? createRuntimeFunction(parsedArguments, [], negate)
+        : createRuntimeFunction(fn, parsedArguments, negate);
+    } catch (e) {
+      console.error(`Parse error: ${e.message}`);
+      throw e;
+    }
   }
+  return expr;
 };
 
 const getParser = (lang, options) => {
@@ -88,15 +88,15 @@ const getParser = (lang, options) => {
 };
 
 // Takes a function and the parsed arguments
-const getInvocableFunction = (fn, parsedArguments, negate) => {
+const createRuntimeFunction = (fn, parsedArguments = [], negate = false) => {
   assertValidRuntimeFunction(fn);
 
   // Build in context
   const invocableFunction = function(context) {
     // Args are supplied, or embedded
-    const functionArguments = composeRuntimeContextArguments(
-      context,
-      parsedArguments
+    const functionArguments = composeRuntimeArgumentsContext(
+      parsedArguments,
+      context
     );
 
     // Supply the runnable context
@@ -113,11 +113,14 @@ const getInvocableFunction = (fn, parsedArguments, negate) => {
   // Parse reference to the runnable return type
   invocableFunction.returns = fn.returns;
 
+  // Signature on function to identify when to call with runtime for value
+  invocableFunction.invocable = true;
+
   return invocableFunction;
 };
 
 // Compose a context surrounding the supplied arguments
-const composeRuntimeContextArguments = (context, parsedArguments) => {
+const composeRuntimeArgumentsContext = (parsedArguments, context) => {
   // Factory a runtime..
   const factoryRuntime = (context, contextParent) => {
     const runtime = {};
@@ -140,7 +143,7 @@ const composeRuntimeContextArguments = (context, parsedArguments) => {
   const get = runtime =>
     function(index) {
       const argument = parsedArguments[index];
-      if (typeof argument === "function") {
+      if (typeof argument === "function" && argument.invocable === true) {
         return argument(runtime.context); // Add runtime context
       } else {
         return argument;
@@ -266,7 +269,7 @@ module.exports = {
   getFunction,
   getArgumentsParser,
   getParser,
-  composeRuntimeContextArguments,
-  getInvocableFunction,
+  composeRuntimeArgumentsContext,
+  createRuntimeFunction,
   parse
 };

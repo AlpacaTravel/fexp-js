@@ -74,18 +74,18 @@ describe("Parse", () => {
       expect(result.length).toBe(2);
     });
   });
-  describe("composeRuntimeContextArguments(context, parsedArguments)", () => {
+  describe("composeRuntimeArgumentsContext(parsedArguments, context)", () => {
     it("will supply a generator that invokes the arguments", () => {
       // const arg0 = jest.fn(i => i.foo);
-      const arg0 = jest.fn(i => i.foo);
-      const arg1 = jest.fn(() => 2);
+      const arg0 = parse.createRuntimeFunction(i => i.context.foo);
+      const arg1 = parse.createRuntimeFunction(() => 2);
 
       const context = { foo: 1 };
 
-      const runtime = parse.composeRuntimeContextArguments(context, [
-        arg0,
-        arg1
-      ]);
+      const runtime = parse.composeRuntimeArgumentsContext(
+        [arg0, arg1],
+        context
+      );
 
       expect(typeof runtime.get).toBe("function");
 
@@ -103,28 +103,28 @@ describe("Parse", () => {
       expect(runtime2.get(0)).toBe(10);
     });
   });
-  describe("getInvocableFunction(fn, parsedArguments, negate)", () => {
+  describe("createRuntimeFunction(fn, parsedArguments, negate)", () => {
     it("will execute correctly", () => {
       const fn = ([arg0, arg1]) => arg0 === arg1;
       const args = [
-        jest.fn(context => context.foo),
-        jest.fn(context => context.bar)
+        parse.createRuntimeFunction(args => args.context.foo),
+        parse.createRuntimeFunction(args => args.context.bar)
       ];
 
       expect(
-        parse.getInvocableFunction(fn, args, false)({ foo: true, bar: true })
+        parse.createRuntimeFunction(fn, args, false)({ foo: true, bar: true })
       ).toBe(true);
       expect(
-        parse.getInvocableFunction(fn, args, true)({ foo: true, bar: true })
+        parse.createRuntimeFunction(fn, args, true)({ foo: true, bar: true })
       ).toBe(false);
       expect(
-        parse.getInvocableFunction(fn, args, false)({ foo: false, bar: true })
+        parse.createRuntimeFunction(fn, args, false)({ foo: false, bar: true })
       ).toBe(false);
       expect(
-        parse.getInvocableFunction(fn, args, false)({ foo: false, bar: false })
+        parse.createRuntimeFunction(fn, args, false)({ foo: false, bar: false })
       ).toBe(true);
       expect(
-        parse.getInvocableFunction(fn, args, true)({ foo: false, bar: false })
+        parse.createRuntimeFunction(fn, args, true)({ foo: false, bar: false })
       ).toBe(false);
     });
   });
@@ -168,6 +168,26 @@ describe("Parse", () => {
       const lang = { "fn-a": fnA, "fn-b": fnB, "fn-c": fnC };
 
       const expr = ["fn-a", ["fn-b"], ["fn-c"]];
+      expect(parse.parse(expr, lang)()).toBe(true);
+    });
+
+    it("will not parse a string value", () => {
+      const fnA = ([arg0, arg1]) => arg0 === arg1;
+      const lang = { "fn-a": fnA };
+
+      const expr = ["fn-a", "foo", "foo"];
+      expect(parse.parse(expr, lang)()).toBe(true);
+    });
+
+    it("will not by-parse a custom parse function", () => {
+      const fnA = ([arg0, arg1]) => arg0 === arg1;
+      fnA.parse = () => ["foo", "foo"];
+      const fnB = () => {
+        throw new Error("Continued processing");
+      };
+      const lang = { "fn-a": fnA, "fn-b": fnB };
+
+      const expr = ["fn-a", ["fn-b"], ["fn-b"]];
       expect(parse.parse(expr, lang)()).toBe(true);
     });
   });

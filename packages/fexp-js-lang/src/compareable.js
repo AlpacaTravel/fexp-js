@@ -12,18 +12,13 @@ const compareable = value => {
   return value;
 };
 
-const eq = (args, context) => compare((a, b) => a === b, args, context);
-const lt = (args, context) =>
-  compare((a, b) => typeof a == typeof b && a < b, args, context);
-const lte = (args, context) =>
-  compare((a, b) => typeof a == typeof b && a <= b, args, context);
-const gt = (args, context) =>
-  compare((a, b) => typeof a == typeof b && a > b, args, context);
-const gte = (args, context) =>
-  compare((a, b) => typeof a == typeof b && a >= b, args, context);
+const eq = args => compare((a, b) => a === b, args);
+const lt = args => compare((a, b) => typeof a == typeof b && a < b, args);
+const lte = args => compare((a, b) => typeof a == typeof b && a <= b, args);
+const gt = args => compare((a, b) => typeof a == typeof b && a > b, args);
+const gte = args => compare((a, b) => typeof a == typeof b && a >= b, args);
 
-const deepCompare = (args, context) =>
-  compare((a, b) => _isEqual(a, b), args, context);
+const deepCompare = args => compare((a, b) => _isEqual(a, b), args);
 
 module.exports = {
   equals: deepCompare,
