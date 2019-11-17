@@ -22,7 +22,8 @@ describe("Parse", () => {
     it("will return the method", () => {
       const fn = () => {};
       expect(parse.getFunction("fn", { fn })).toBe(fn);
-      expect(parse.getFunction("fn", {})).toBeUndefined();
+      expect(parse.getFunction("fn", {})).not.toBeUndefined();
+      expect(parse.getFunction("fn", {})).not.toBe(fn);
       expect(() => parse.getFunction("fn")).toThrow();
     });
   });
