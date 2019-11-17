@@ -50,7 +50,7 @@ const assert = require("assert");
 // returns: [types.number, types.bool]
 
 // Parse an expression
-const parse = (expr, lang, options) => {
+const parse = (expr, lang = {}, options = {}) => {
   if (isExpression(expr)) {
     try {
       // Identify parts
@@ -71,7 +71,6 @@ const parse = (expr, lang, options) => {
         ? createRuntimeFunction(parsedArguments, [], negate)
         : createRuntimeFunction(fn, parsedArguments, negate);
     } catch (e) {
-      console.error(`Parse error: ${e.message}`);
       throw e;
     }
   }
@@ -104,7 +103,7 @@ const createRuntimeFunction = (fn, parsedArguments = [], negate = false) => {
 
     // Optionally negate the result
     if (negate) {
-      return !result;
+      return negateValue(result);
     }
 
     return result;
@@ -130,7 +129,7 @@ const composeRuntimeArgumentsContext = (parsedArguments, context) => {
     runtime[Symbol.iterator] = iterator;
     runtime.contextParent = contextParent;
     runtime.context = context;
-    runtime.arguments = () => [...iterator()];
+    runtime.arguments = (offset = 0) => [...iterator(offset)];
     runtime.length = parsedArguments.length;
 
     // Provide an ability to create sub runtime for the args
@@ -152,8 +151,8 @@ const composeRuntimeArgumentsContext = (parsedArguments, context) => {
 
   // An iterator to process over arguments
   const getIterator = runtime =>
-    function*() {
-      let x = 0;
+    function*(offset = 0) {
+      let x = offset;
       while (x < parsedArguments.length) {
         yield runtime.get(x++);
       }
@@ -195,6 +194,49 @@ const getArgumentsParser = (obj, parser) => {
   })();
 };
 
+const literalFn = ([arg0]) => arg0;
+// No parsing of args
+literalFn.parse = args => args;
+
+const continueFn = ([arg0]) => arg0;
+
+const negateFn = ([arg0]) => negateValue(arg0);
+
+const evaluateFn = args => {
+  // Compose the first as a function
+  const fn = functionFn(args);
+
+  // Parse the remaining arguments supplied in the original runtime
+  const remainingArgs = args.arguments(1);
+
+  return fn(...remainingArgs);
+};
+
+const functionFn = runtime => (...args) => {
+  // Wrap a function with a new runtime
+  const newRuntime = runtime.createSubRuntime({
+    vars: {
+      arguments: [...args]
+    }
+  });
+
+  // Process the arg result with a new runtime
+  return newRuntime.get(0);
+};
+
+const negateValue = value => {
+  if (typeof value === "function") {
+    // Await the negation of the function once executed
+    return (...args) => negateValue(...args);
+  }
+
+  if (typeof value === "boolean") {
+    return !value;
+  }
+
+  throw new Error("Can not negate a non-boolean result");
+};
+
 // Evaluate that the supplied expression is in the correct syntax structure
 const isExpression = expr =>
   Array.isArray(expr) && expr.length > 0 && typeof expr[0] === "string";
@@ -229,7 +271,16 @@ const getFunction = (name, lang) => {
 
   switch (name) {
     case "!":
-      return negate;
+    case "negate":
+      return negateFn;
+    case "literal":
+      return literalFn;
+    case "fn":
+      return functionFn;
+    case "evaluate":
+      return evaluateFn;
+    case "":
+      return continueFn;
     default:
       break;
   }

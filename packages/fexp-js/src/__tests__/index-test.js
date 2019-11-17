@@ -31,13 +31,13 @@ describe("module exports", () => {
           return `${arg1}${arg2}${context.vars.arguments[0].foo}`;
         });
 
-        const result = parser(expr, { "my-function": myFunction });
+        const result = parse(expr, { "my-function": myFunction });
         expect(result(param)).toBe("arg1arg2bar");
         expect(myFunction.mock.calls.length).toBe(1);
-        expect(myFunction.mock.calls[0][0]).toMatchObject(["arg1", "arg2"]);
-        expect(myFunction.mock.calls[0][1]).toMatchObject({
-          vars: { arguments: [param] }
-        });
+        expect(myFunction.mock.calls[0][0].get(0)).toBe("arg1");
+        expect(myFunction.mock.calls[0][0].context.vars.arguments[0]).toBe(
+          param
+        );
       });
       it("will throw when unmatched", () => {
         expect(() => {
@@ -55,7 +55,7 @@ describe("module exports", () => {
     describe("using evaluate", () => {
       it("will process against the supplied context", () => {
         const param = { foo: { bar: "foobar" } };
-        const get = args => context.vars.arguments[0][args.get(0)];
+        const get = args => args.context.vars.arguments[0][args.get(0)];
 
         const result = parse(["evaluate", ["get", "bar"], ["get", "foo"]], {
           get
@@ -96,14 +96,17 @@ describe("module exports", () => {
       it("will construct a fn", () => {
         const mfn = args => args.get(0) && args.context.vars.arguments[0];
         const fn1 = parse(["fn", ["mfn", true]], { mfn });
-        value(fn1(true)).toBe(true);
-        expect(fn1(false)).toBe(false);
+        expect(fn1()(true)).toBe(true);
+        expect(fn1()(false)).toBe(false);
         const fn2 = parse(["!fn", ["mfn", true]], { mfn });
-        expect(fn2(true)).toBe(false);
-        expect(fn2(false)).toBe(true);
+        expect(fn2()(true)).toBe(false);
+        expect(fn2()(false)).toBe(true);
       });
       it("will support map with lambda", () => {
-        const map = ([arg0, arg1]) => arg0.map(arg1);
+        const map = args => {
+          const [arg0, arg1] = args;
+          return arg0.map(a => arg1(a));
+        };
         const fnArg = args => args.context.vars.arguments[args.get(0)];
         const mult = ([arg0, arg1]) => arg0 * arg1;
         const lang = { map, ["fn-arg"]: fnArg, ["*"]: mult };

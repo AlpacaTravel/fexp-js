@@ -12,7 +12,7 @@ const parse = function(expr, lang, options) {
     // Build context around the function call
     const context = {
       vars: {
-        arguments: arguments
+        arguments: [...arguments]
       }
     };
 
