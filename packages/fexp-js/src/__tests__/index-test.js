@@ -3,9 +3,31 @@ const parse = mod.parse;
 
 describe("module exports", () => {
   it("will expose functions", () => {
+    expect(typeof mod.evaluate).toBe("function");
+    expect(typeof mod.compile).toBe("function");
     expect(typeof mod.langs).toBe("function");
     expect(typeof mod.parse).toBe("function");
     expect(typeof mod.parser).toBe("object");
+  });
+  describe("evaluate", () => {
+    it("will support the older API", () => {
+      const eq = ([arg0, arg1]) => arg0 === arg1;
+      const get = args => args.context.vars.arguments[0][args.get(0)];
+      expect(
+        mod.evaluate(["eq", ["get", "foo"], "bar"], { eq, get }, { foo: "bar" })
+      ).toBe(true);
+    });
+  });
+  describe("compile", () => {
+    it("will support similar older API", () => {
+      const eq = ([arg0, arg1]) => arg0 === arg1;
+      const get = args => args.context.vars.arguments[0][args.get(0)];
+      const { compiled: fn } = mod.compile(["eq", ["get", "foo"], "bar"], {
+        eq,
+        get
+      });
+      expect(fn({ foo: "bar" })).toBe(true);
+    });
   });
   it("will composite langs with langs(...)", () => {
     const lang1 = { fn1: () => true };

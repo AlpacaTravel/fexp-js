@@ -4,15 +4,21 @@ const langs = (...composites) => {
   return Object.assign({}, ...composites);
 };
 
+const compile = (expr, lang) => {
+  return { compiled: parse(expr, lang) };
+};
+
+const evaluate = (expr, lang, ...args) => parse(expr, lang)(...args);
+
 const parse = function(expr, lang, options) {
   // Parse the expression
   const parsed = parser.parse(expr, lang, options);
 
-  return function() {
+  return function(...args) {
     // Build context around the function call
     const context = {
       vars: {
-        arguments: [...arguments]
+        arguments: [...args]
       }
     };
 
@@ -28,6 +34,8 @@ const parse = function(expr, lang, options) {
 
 module.exports = {
   langs,
+  evaluate,
+  compile,
   parse,
   parser
 };
