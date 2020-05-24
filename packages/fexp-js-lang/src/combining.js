@@ -1,6 +1,39 @@
-const all = args => args.every(arg => arg);
-const any = args => args.some(arg => arg);
-const none = args => !any(args);
+const isFalseMatch = arg => {
+  if (arg === false || typeof arg === "undefined" || arg === null) {
+    return true;
+  }
+
+  return false;
+};
+
+const all = args => {
+  for (const arg of args) {
+    if (isFalseMatch(arg)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const any = args => {
+  for (const arg of args) {
+    if (!isFalseMatch(arg)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+const none = args => {
+  for (const arg of args) {
+    if (!isFalseMatch(arg)) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 module.exports = {
   all,

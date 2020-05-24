@@ -24,7 +24,13 @@ const resolveContext = (context, obj, property) => {
   return null;
 };
 
-const get = ([prop, obj], context) => resolveContext(context, obj, prop);
+const get = args => {
+  const [prop, obj] = args;
+  const { context } = args;
+
+  return resolveContext(context, obj, prop);
+};
+
 const length = ([value]) => {
   if (value && value.length) {
     return value.length;
@@ -41,7 +47,11 @@ const at = args => {
   }
   return undefined;
 };
-const fnArg = ([index], context) => context.vars.arguments[index];
+const fnArg = args => {
+  const [index] = args;
+  const { context } = args;
+  return context.vars.arguments[index];
+};
 
 module.exports = {
   get,

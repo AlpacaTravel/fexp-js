@@ -16,7 +16,7 @@ Developers can implement fexp into your application environments to offer script
 
 ## Syntax Overview
 
-`[<name>, [param1[, param2[, ..., paramN]]]]`
+`[<name>, [arg1[, arg2[, ..., argN]]]]`
 
 fexp processes the syntax and will invoke the required language functions as defined in the supplied lang features.
 
@@ -41,7 +41,7 @@ The fexp-js library is generic enough in scripting purpose to have a wide range 
 Expressions can be used to filter a collection.
 
 ```javascript
-import { compile } from "@alpaca-travel/fexp-js";
+import { parse } from "@alpaca-travel/fexp-js";
 import lang from "@alpaca-travel/fexp-js-lang";
 
 // Our collection (see hotels.json for example)
@@ -55,10 +55,10 @@ const expr = [
 ];
 
 // Compile our expression
-const { compiled: fn } = compile(expr, lang);
+const fn = parse(expr, lang);
 
 // Match against our collection
-const firstMatch = hotels.find(item => fn(lang, item));
+const firstMatch = hotels.find(item => fn(item));
 
 console.log(firstMatch);
 ```
@@ -154,24 +154,24 @@ fexp-js-lang supports a number of functions to work with types in expressions.
 ```
 
 ```javascript
-import { evaluate } from "@alpaca-travel/fexp-js";
+import { parse } from "@alpaca-travel/fexp-js";
 import lang from "@alpaca-travel/fexp-js-lang";
 
 describe("Using Types with fexp-js-lang", () => {
   it("will return typeof for the supplied parameters", () => {
     // ['typeof', 0] === 'number'
-    expect(evaluate(["typeof", 0], lang)).toBe("number");
-    expect(evaluate(["typeof", "test"], lang)).toBe("string");
-    expect(evaluate(["typeof", { foo: "bar" }], lang)).toBe("object");
-    expect(evaluate(["typeof", ["literal", ["value1", "value2"]]], lang)).toBe(
+    expect(parse(["typeof", 0], lang)()).toBe("number");
+    expect(parse(["typeof", "test"], lang)()).toBe("string");
+    expect(parse(["typeof", { foo: "bar" }], lang)()).toBe("object");
+    expect(parse(["typeof", ["literal", ["value1", "value2"]]], lang)()).toBe(
       "object"
     );
   });
   it("will cast using to-boolean", () => {
-    expect(evaluate(["to-boolean", "true"], lang)).toBe(true);
-    expect(evaluate(["to-boolean", "yes"], lang)).toBe(true);
-    expect(evaluate(["to-boolean", "false"], lang)).toBe(false);
-    expect(evaluate(["to-boolean", "0"], lang)).toBe(false);
+    expect(parse(["to-boolean", "true"], lang)()).toBe(true);
+    expect(parse(["to-boolean", "yes"], lang)()).toBe(true);
+    expect(parse(["to-boolean", "false"], lang)()).toBe(false);
+    expect(parse(["to-boolean", "0"], lang)()).toBe(false);
   });
 });
 ```
@@ -277,44 +277,21 @@ The optional GIS language enhancements provides language enhancements for workin
 
 ## API Surface
 
-### compile(expr, lang)
-
-Compiles the expression into a function for speed in repeat use.
-
-```javascript
-import { compile } from "@alpaca-travel/fexp-js";
-import lang from "@alpaca-travel/fexp-js-lang";
-
-// Simple expression
-const expr = ["==", ["get", "foo"], "bar"];
-
-// Compile into function to evaluate
-const {
-  source, // <-- Source JS
-  compiled // <-- Function
-} = compile(expr, lang);
-
-// Execute the compiled function against a context
-const result = compiled(lang, { foo: "bar" });
-
-console.log(result); // <-- true
-```
-
-### evaluate(expr, lang[, context])
+### parse(expr, lang[, options])
 
 Evaluates an expression without use of compilation (so is therefore slower than compiling).
 
 ```javascript
-import { evaluate } from "@alpaca-travel/fexp-js";
+import { parse } from "@alpaca-travel/fexp-js";
 import lang from "@alpaca-travel/fexp-js-lang";
 
 // Simple expression
 const expr = ["==", ["get", "foo"], "bar"];
 
-// Execute the compiled function against a context
-const result = evaluate(expr, lang, { foo: "bar" });
+// Prepare function
+const fn = parse(expr, lang);
 
-console.log(result); // <-- true
+console.log(fn({ foo: "bar" })); // <-- true
 ```
 
 ### langs(lang1, [, lang2[, lang3, ..., langN]])
@@ -343,11 +320,11 @@ console.log(result); // <-- true
 ## Adding Custom Functions
 
 ```javascript
-import { langs } from "@alpaca-travel/fexp-js";
+import { langs, parse } from "@alpaca-travel/fexp-js";
 import std from "@alpaca-travel/fexp-js-lang";
 
 // Implement a sum function to add resolved values
-const sum = args => args.reduce((c, t) => c + t);
+const sum = ([...args]) => args.reduce((c, t) => c + t);
 
 // Build an expression
 const expr = ["sum", 1, 2, 3, 4];
@@ -356,21 +333,62 @@ const expr = ["sum", 1, 2, 3, 4];
 const lang = langs(std, { sum });
 
 // Compile for execution
-const { compiled: exprFn } = compile(expr, lang);
+const fn = parse(expr, lang);
 
 // Process the compiled function
-console.log(exprFn(lang)); // <-- 10
+console.log(fn()); // <-- 10
 ```
 
-### Accessing Context
+### Optional Parsing Behaviour
 
-You functions are provided with the signature `fn(args, context)`. Context allows you to access the runtime context.
+You can customise the parsing behaviour of your functions by supplying your function with a parse implementation.
 
 ```javascript
-const context = {
-  vars: {},
-  prior: ...
-}
+// A trivial function
+const myMixedLiteralFunction = ([arg0, arg1]) => arg0.contains(arg1);
+
+// Customise the parse behaviour
+myMixedLiteralFunction.parse = (args, parser) => {
+  // Treat the first as a literal, and the second as an expression
+  return [args[0], parse(args[1])];
+};
+
+const parsed = parse(["my-mixed-literal-function", [1, 2, 3], ["get", "foo"]]);
+
+parsed({ foo: 1 });
+```
+
+Note: You can also return a new function as a result, if you want to perform an initialisation on the supplied arguments.
+
+### Typechecking (coming soon)
+
+Parsing options can perform typechecking on your expression to evaluate the compatibility of your expressions.
+
+To support typechecking compatibility, you will need to define the argument types and possible return types.
+
+### A note about deferred execution
+
+Arguments are only processed when they are accessed. This is for an optimisation so that when using none/any/all etc it can terminate early, without evaluating the remaining expressions.
+
+### Understanding Function Arguments (args)
+
+You functions are provided with the signature `fn(args)`.
+
+Args provides access to the args of an expression, as well as context vars (aka stack). The args object is an iterator so you can use similar method signatures to peel off arguments.
+
+```javascript
+const customFn = args => {
+  // Resolved expression args
+  const [arg0, arg1] = args;
+  // Runtime args
+  const { context } = args;
+
+  // Accessing the current context vars
+  // These will contain the initial parse(X) arguments supplied to top level
+  const {
+    vars: { arguments: runtimeArguments }
+  } = context;
+};
 ```
 
 When your function is invoked, the special vars of "arguments" is assigned the function arguments. In the case of using expressions (using API compiled or evaluate), they are assigned to vars.
@@ -378,76 +396,20 @@ When your function is invoked, the special vars of "arguments" is assigned the f
 ```javascript
 const lang = {
   // Capture the context and args
-  ['my-function']: (args, context) => return { args, context };
+  ['my-function']: (args) => {
+    const [arg0, arg1] = args;
+    console.log(arg0, arg1); // Prints "farg1", "farg2"
+    const { context } = args;
+    console.log(context); // Prints { vars: { arguments: ["arg1", "arg2"] } }
 }
 
 // Execute to capture
-const result = evaluate(["my-function", "farg1", "farg2"], lang, "arg1", "arg2");
+const result = parse(["my-function", "farg1", "farg2"], lang);
 
-console.log(result);
-/*
-{
-  args: ["farg1", "farg2"],
-  context: {
-    vars: {
-      arguments: ["arg1", "arg2"]
-    },
-    ...
-  }
-}
-*/
+result("arg1", "arg2");
 ```
 
 By executing a function in your expression (e.g. by calling "fn" to create a sub-function), when invoked will contain a new context, and the context vars "arguments" contain the arguments passed to your function. By using "fn-args" (in the standard library), you can access the function arguments by index.
-
-## Embedding in MongoDB
-
-MongoDB offers support for providing fexp-js JavaScript expression in the \$where clause via to the V8 Runtime scripting engine.
-
-#### Template for String expression
-
-Below is a verbose example of creating a string JavaScript expression with a compiled expression and
-fexp-js-lang runtime.
-
-If you are creating your own language extensions, you will need to compile your lang additions using
-your preferred development environment into a target platform (e.g. rollup build configuration,
-see packages/fexp-js-lang/rollup.config.js for example) to provide MongoDB your language implementation.
-
-```javascript
-const fs = require("fs");
-const path = require("path");
-const { compile } = require("@alpaca-travel/fexp-js");
-const lang = require("@alpaca-travel/fexp-js-lang");
-
-// Compile your expression with your lang
-const { source } = compile(["==", ["get", "foo"], "foobar"], lang);
-
-// Obtian your compiled lang source (example shows the IIFE named export of fexp-js-lang)
-const langSource = fs.readFileSync(
-  path.resolve(__dirname, "./node_modules/fexp-js-lang/dist/index-inc.js")
-);
-
-// Build the MongoDB string JavaScript expression
-// Substitute in the 2 compiled components; source and your language source
-const expression = `function() {
-  // Lang source is named 'lang' (e.g. var lang = ... )
-  ${langSource}
-
-  // Our Compiled fn
-  const sub = function() {
-    ${source}
-  }
-
-  return sub(lang, this);
-}`;
-
-// Output the expression
-console.log(expression);
-
-// Use in MongoDB $where operator
-// https://docs.mongodb.com/manual/reference/operator/query/where/
-// db.players.find({ $where: expression })
-```
 
 ## Contributing
 
