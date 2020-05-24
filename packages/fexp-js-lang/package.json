@@ -1,6 +1,6 @@
 {
   "name": "@alpaca-travel/fexp-js-lang",
-  "version": "0.3.0",
+  "version": "1.0.0-alpha.0",
   "description": "Functional expressions",
   "main": "dist/index.js",
   "author": "Cameron Manderson <cam@alpaca.travel>",
