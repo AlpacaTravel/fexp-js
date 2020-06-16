@@ -20,6 +20,14 @@ describe("Accessors", () => {
     expect(accessors.length([[1, 2, 3]])).toBe(3);
     expect(accessors.length([null])).toBe(0);
   });
+  it('will access first using the "first"', () => {
+    expect(accessors.first([[1, 2, 3]])).toBe(1);
+    expect(accessors.first([null])).toBe(undefined);
+  });
+  it('will access last using the "last"', () => {
+    expect(accessors.last([[1, 2, 3]])).toBe(3);
+    expect(accessors.last([null])).toBe(undefined);
+  });
   it('will access values from an array index using "at"', () => {
     expect(accessors.at([2, 1, 2, 3])).toBe(3);
     expect(accessors.at([2, [1, 2, 3]])).toBe(3);

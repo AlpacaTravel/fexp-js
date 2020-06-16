@@ -24,7 +24,7 @@ const resolveContext = (context, obj, property) => {
   return null;
 };
 
-const get = args => {
+const get = (args) => {
   const [prop, obj] = args;
   const { context } = args;
 
@@ -37,7 +37,7 @@ const length = ([value]) => {
   }
   return 0;
 };
-const at = args => {
+const at = (args) => {
   const [index, ...value] = args;
   if (Array.isArray(value) && value.length > 1) {
     return value[index];
@@ -47,7 +47,19 @@ const at = args => {
   }
   return undefined;
 };
-const fnArg = args => {
+const first = ([value]) => {
+  if (value && value.length) {
+    return value[0];
+  }
+  return undefined;
+};
+const last = ([value]) => {
+  if (value && value.length) {
+    return value[value.length - 1];
+  }
+  return undefined;
+};
+const fnArg = (args) => {
   const [index] = args;
   const { context } = args;
   return context.vars.arguments[index];
@@ -56,6 +68,8 @@ const fnArg = args => {
 module.exports = {
   get,
   at,
+  first,
+  last,
   length,
-  ["fn-arg"]: fnArg
+  ["fn-arg"]: fnArg,
 };

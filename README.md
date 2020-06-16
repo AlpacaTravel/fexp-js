@@ -6,7 +6,7 @@ Functional Expressions ("fexp") provides a simple functional scripting syntax. f
 
 - Simple syntax :relieved:
 - General purpose expressions (filtering, map/reduce etc) :hammer: :wrench:
-- Portable via serialization (JSON) :envelope:
+- Portable via serialization (JSON/YAML) :envelope:
 - Compiles expressions into functions :speedboat: :rocket:
 - Tiny, with a full-featured syntax :school_satchel:
 - Optional libs, for GIS :earth_africa: :earth_americas: :earth_asia:
@@ -51,14 +51,14 @@ import hotels from "./hotels.json";
 const expr = [
   "all",
   [">=", ["get", "stars-rating"], 3.5],
-  ["in", ["get", "tags"], "boutique"]
+  ["in", ["get", "tags"], "boutique"],
 ];
 
 // Compile our expression
 const fn = parse(expr, lang);
 
 // Match against our collection
-const firstMatch = hotels.find(item => fn(item));
+const firstMatch = hotels.find((item) => fn(item));
 
 console.log(firstMatch);
 ```
@@ -377,7 +377,7 @@ You functions are provided with the signature `fn(args)`.
 Args provides access to the args of an expression, as well as context vars (aka stack). The args object is an iterator so you can use similar method signatures to peel off arguments.
 
 ```javascript
-const customFn = args => {
+const customFn = (args) => {
   // Resolved expression args
   const [arg0, arg1] = args;
   // Runtime args
@@ -386,7 +386,7 @@ const customFn = args => {
   // Accessing the current context vars
   // These will contain the initial parse(X) arguments supplied to top level
   const {
-    vars: { arguments: runtimeArguments }
+    vars: { arguments: runtimeArguments },
   } = context;
 };
 ```

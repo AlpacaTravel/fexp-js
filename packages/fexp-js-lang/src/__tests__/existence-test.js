@@ -13,5 +13,6 @@ describe("Existence", () => {
   });
   it('will check empty values using "empty"', () => {
     expect(existence.empty([null])).toBe(true);
+    expect(existence.empty([[]])).toBe(true);
   });
 });
