@@ -2,26 +2,23 @@ language: node_js
 node_js:
   - "10"
 cache:
-  yarn: true
   directories:
     - "node_modules"
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s
-  - export PATH="$HOME/.yarn/bin:$PATH"
   - npm install codecov.io coveralls request lerna@2.0.0-rc.4
 script:
   - cd packages/fexp-js
-  - yarn
+  - npm install
   - cd -
   - cd packages/fexp-js-lang
-  - yarn
+  - npm install
   - cd -
   - cd packages/fexp-js-lang-gis
-  - yarn
+  - npm install
   - cd -
   - pwd
-  - yarn test
+  - npm run test
 
 after_success:
-  - yarn run coverage:combine
+  - npm run coverage:combine
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

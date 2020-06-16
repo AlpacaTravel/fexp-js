@@ -2,15 +2,17 @@
   "name": "@alpaca-travel/fexp-js-root",
   "private": true,
   "scripts": {
-    "test": "yarn test:fexp-js && yarn test:fexp-js-lang && yarn test:fexp-js-lang-gis",
-    "test:fexp-js": "cd packages/fexp-js && yarn test:coverage",
-    "test:fexp-js-lang": "cd packages/fexp-js-lang && yarn test:coverage",
-    "test:fexp-js-lang-gis": "cd packages/fexp-js-lang-gis && yarn test:coverage",
+    "test": "npm run test:fexp-js && npm run test:fexp-js-lang && npm run test:fexp-js-lang-gis",
+    "test:fexp-js": "cd packages/fexp-js && npm run test:coverage",
+    "test:fexp-js-lang": "cd packages/fexp-js-lang && npm run test:coverage",
+    "test:fexp-js-lang-gis": "cd packages/fexp-js-lang-gis && npm run test:coverage",
     "coverage:combine": "istanbul report --include \"./packages/**/coverage/coverage-final.json\" lcovonly text-summary"
   },
   "devDependencies": {
     "istanbul": "^0.4.5",
     "lerna": "^3.18.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "10": "0.0.1"
+  }
 }
