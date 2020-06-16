@@ -32,7 +32,5 @@
   "env": {
     "jest": true
   },
-  "dependencies": {
-    "assert": "^2.0.0"
-  }
+  "dependencies": {}
 }

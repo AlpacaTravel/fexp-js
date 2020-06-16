@@ -1,4 +1,8 @@
-const assert = require("assert");
+const assert = (result, message) => {
+  if (!result) {
+    throw Error(message);
+  }
+};
 
 // Create the structure, without executing the params
 
@@ -78,7 +82,7 @@ const parse = (expr, lang = {}, options = {}) => {
 };
 
 const getParser = (lang, options) => {
-  const parser = expr => parse(expr, lang, options);
+  const parser = (expr) => parse(expr, lang, options);
 
   parser.lang = lang;
   parser.options = options;
@@ -133,13 +137,13 @@ const composeRuntimeArgumentsContext = (parsedArguments, context) => {
     runtime.length = parsedArguments.length;
 
     // Provide an ability to create sub runtime for the args
-    runtime.createSubRuntime = ctx => factoryRuntime(ctx, context);
+    runtime.createSubRuntime = (ctx) => factoryRuntime(ctx, context);
 
     return runtime;
   };
 
   // Generator to invoke obtaining the argument result
-  const get = runtime =>
+  const get = (runtime) =>
     function(index) {
       const argument = parsedArguments[index];
       if (typeof argument === "function" && argument.invocable === true) {
@@ -150,7 +154,7 @@ const composeRuntimeArgumentsContext = (parsedArguments, context) => {
     };
 
   // An iterator to process over arguments
-  const getIterator = runtime =>
+  const getIterator = (runtime) =>
     function*(offset = 0) {
       let x = offset;
       while (x < parsedArguments.length) {
@@ -165,10 +169,10 @@ const composeRuntimeArgumentsContext = (parsedArguments, context) => {
 // Obtain the parser for a function
 const getArgumentsParser = (obj, parser) => {
   // Setup a curryable instance
-  const parserLocal = expr => parser(expr);
+  const parserLocal = (expr) => parser(expr);
 
   // Provide a validate types aware of the object
-  parserLocal.validateTypes = args => {
+  parserLocal.validateTypes = (args) => {
     // TODO: Validate the types
     // Take the resolved args, and see if they have corresponding return types
   };
@@ -180,11 +184,11 @@ const getArgumentsParser = (obj, parser) => {
   return (() => {
     // Object provides a parsing implementation
     if (isFunction(obj.parse)) {
-      return args => obj.parse(args, parserLocal);
+      return (args) => obj.parse(args, parserLocal);
     }
 
     // Parse using the default parsing behaviour
-    return args => {
+    return (args) => {
       const parsedArguments = args.map(parser);
 
       parserLocal.validateTypes(parsedArguments);
@@ -196,13 +200,13 @@ const getArgumentsParser = (obj, parser) => {
 
 const literalFn = ([arg0]) => arg0;
 // No parsing of args
-literalFn.parse = args => args;
+literalFn.parse = (args) => args;
 
 const continueFn = ([arg0]) => arg0;
 
 const negateFn = ([arg0]) => negateValue(arg0);
 
-const evaluateFn = args => {
+const evaluateFn = (args) => {
   // Compose the first as a function
   const fn = functionFn(args);
 
@@ -212,19 +216,19 @@ const evaluateFn = args => {
   return fn(...remainingArgs);
 };
 
-const functionFn = runtime => (...args) => {
+const functionFn = (runtime) => (...args) => {
   // Wrap a function with a new runtime
   const newRuntime = runtime.createSubRuntime({
     vars: {
-      arguments: [...args]
-    }
+      arguments: [...args],
+    },
   });
 
   // Process the arg result with a new runtime
   return newRuntime.get(0);
 };
 
-const negateValue = value => {
+const negateValue = (value) => {
   if (typeof value === "function") {
     // Await the negation of the function once executed
     return (...args) => negateValue(...args);
@@ -238,16 +242,16 @@ const negateValue = value => {
 };
 
 // Evaluate that the supplied expression is in the correct syntax structure
-const isExpression = expr =>
+const isExpression = (expr) =>
   Array.isArray(expr) && expr.length > 0 && typeof expr[0] === "string";
 
 // Determins if supplied arg is a function
-const isFunction = fn => typeof fn === "function";
+const isFunction = (fn) => typeof fn === "function";
 
 const isFunctionNegated = ([name]) => name.substr(0, 1) == "!";
 
 // Obtain the function name from the expression
-const getFunctionName = expr => {
+const getFunctionName = (expr) => {
   const [name] = expr;
 
   // Allow for negate syntax
@@ -289,21 +293,21 @@ const getFunction = (name, lang) => {
 };
 
 // Assert a check on the expression syntax
-const assertValidExpressionSyntax = expr =>
+const assertValidExpressionSyntax = (expr) =>
   assert(
     isExpression(expr),
     "Expression should be an array with the first argument being a string"
   );
 
 // Assert a check on the language
-const assertValidLanguage = lang =>
+const assertValidLanguage = (lang) =>
   assert(typeof lang === "object", "Language mapping is not present");
 
 // Assert a check on the function
-const assertValidExpressionFunction = fn =>
+const assertValidExpressionFunction = (fn) =>
   assert(typeof fn === "function", "Language function is not valid");
 
-const assertValidRuntimeFunction = obj => {
+const assertValidRuntimeFunction = (obj) => {
   assert(obj, "Runtime not found");
   if (typeof obj === "function") {
     return;
@@ -322,5 +326,5 @@ module.exports = {
   getParser,
   composeRuntimeArgumentsContext,
   createRuntimeFunction,
-  parse
+  parse,
 };
